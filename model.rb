@@ -27,8 +27,8 @@ def read_config_file
 end
 
 def extract_configuration
-  lines = read_config_file
-  puts lines["development"]
+  configuration = read_config_file
+  puts configuration["development"]
 end
 
 create_config_file
