@@ -1,4 +1,4 @@
-module Model
+module Model < WeboModel
 
   def self.get_model_parameter
     @file_name = method_name
