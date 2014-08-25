@@ -1,4 +1,4 @@
-module Model < WeboModel
+module Model
 
   def self.get_model_parameter
     @file_name = method_name
@@ -10,7 +10,7 @@ module Model < WeboModel
       model_name = model_name.downcase
       model_class_name = model_name.capitalize
       validate_flag = validate
-      write_model.write "class #{model_class_name}\n\n"
+      write_model.write "class #{model_class_name} < WeboModel\n\n"
       write_model.close
       if validate_flag.eql?1
           data_type,column_name = get_model_attribute
