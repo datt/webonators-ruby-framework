@@ -2,22 +2,15 @@
 require "mysql"
 require_relative "model.rb"
 
-=begin
-contains raw queries for creating , selecting , updataing database
-=end
-
+#contains raw queries for creating , selecting , updataing database
 class SqlQuery
   #method for connecting to database
-  #include 'Model'
-  include Week
   def get_connection
-    con = Mysql.new 'localhost', 'root', 'webonise6186' , 'trial'
-
+    Mysql.new('localhost', 'root', 'webonise6186' , 'trial')
   end
 
   #method for getting data types
   def get_datatypes
-
     datatype = ['varchar', 'integer']
   end
 
@@ -49,17 +42,21 @@ class SqlQuery
   def create_table
     query = create_query
     puts query
-    puts Week.weeks_in_year
-    c = get_connection
-    puts c
-    model_name = "Person".downcase
-    create_table = "CREATE TABLE IF NOT EXISTS #{model_name}(id INT PRIMARY KEY AUTO_INCREMENT, #{query})"
-    c.query(create_table)
+    connection = get_connection
+    model_name = "Simple1".downcase
+    create_table = "CREATE TABLE IF NOT EXISTS #{model_name}(id INT PRIMARY KEY AUTO_INCREMENT NOT NULL, #{query})"
+    connection.query(create_table)
 
   end
+
+  def insert_into_table
+    fields = get_columnname
+    p fileds
+  end
+
 end
-s = SqlQuery.new
-s.create_table
+sql_query = SqlQuery.new
+sql_query.create_table
 
 #SqlQuery.get_connection
 #SqlQuery.get_datatypes
