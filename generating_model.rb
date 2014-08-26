@@ -70,11 +70,12 @@ module GeneratingModel
       if line.scan"class #{model_class_name}"
         while(loop_counter<=data_type.size-1)
           write_file.write"\s\s#{column_name[loop_counter]}:#{data_type[loop_counter]}"
-          write_file.write"\nend"
+          write_file.write"\n"
           loop_counter += 1
         end
       end
     end
+    write_file.write("end")
     write_file.close
   end
 
