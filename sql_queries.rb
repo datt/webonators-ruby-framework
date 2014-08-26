@@ -1,23 +1,23 @@
 #!/usr/bin/ruby
 require "mysql"
-require_relative "model.rb"
+require_relative "generate_configuration.rb"
 
-=begin
-contains raw queries for creating , selecting , updataing database
-=end
-
+#contains raw queries for creating , selecting , updataing database
 class SqlQuery
   #method for connecting to database
-  #include 'Model'
-  include Week
+  include GenerateConfigurationFile
   def get_connection
-    con = Mysql.new 'localhost', 'root', 'webonise6186' , 'trial'
-
+    configuration = GenerateConfigurationFile.extract_configuration
+    puts configuration
+    hostname = configuration["hostname"]
+    password = configuration["password"]
+    username = configuration["username"]
+    database = configuration["database"]
+    Mysql.new("#{hostname}", "#{username}", "#{password}" , "#{database}")
   end
 
   #method for getting data types
   def get_datatypes
-
     datatype = ['varchar', 'integer']
   end
 
@@ -49,17 +49,27 @@ class SqlQuery
   def create_table
     query = create_query
     puts query
-    puts Week.weeks_in_year
-    c = get_connection
-    puts c
-    model_name = "Person".downcase
-    create_table = "CREATE TABLE IF NOT EXISTS #{model_name}(id INT PRIMARY KEY AUTO_INCREMENT, #{query})"
-    c.query(create_table)
+    connection = get_connection
+    model_name = "Simple2".downcase
+    create_table = "CREATE TABLE IF NOT EXISTS #{model_name}(id INT PRIMARY KEY AUTO_INCREMENT NOT NULL, #{query})"
+    connection.query(create_table)
 
   end
+
+  def insert_into_table
+    connection = get_connection
+    fields = get_columnname
+     column_fileds = fields.join(",")
+     table_name = "simple1"
+     query = "INSERT INTO #{table_name} (#{column_fileds}) VALUES ('minakshi',12)"
+     puts query
+     connection.query(query)
+  end
+
 end
-s = SqlQuery.new
-s.create_table
+sql_query = SqlQuery.new
+sql_query.get_connection
+sql_query.create_table
 
 #SqlQuery.get_connection
 #SqlQuery.get_datatypes
