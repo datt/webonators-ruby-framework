@@ -20,7 +20,27 @@ module GeneratingModel
       elsif validate_flag.eql?2
       end
       create_class model_class_name,column_name
+      get_paramenter
     end
+  end
+
+  def self.get_paramenter
+    arguement_counter = 0
+    data_type = ["int","string"]
+    column_name = ["name","age"]
+    ==begin
+    @arg.each do |arguement|
+      if arguement_counter>=2
+        column = arguement.split(':')
+        data_type << column[0]
+        column_name << column[1]
+      end
+      arguement_counter += 1
+    end
+    ==end
+    p data_type
+    p column_name
+    return data_type,column_name
   end
 
   def self.get_model_attribute
