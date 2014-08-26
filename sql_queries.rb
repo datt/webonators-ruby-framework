@@ -1,12 +1,19 @@
 #!/usr/bin/ruby
 require "mysql"
-require_relative "model.rb"
+require_relative "generate_configuration.rb"
 
 #contains raw queries for creating , selecting , updataing database
 class SqlQuery
   #method for connecting to database
+  include GenerateConfigurationFile
   def get_connection
-    Mysql.new('localhost', 'root', 'webonise6186' , 'trial')
+    configuration = GenerateConfigurationFile.extract_configuration
+    puts configuration
+    hostname = configuration["hostname"]
+    password = configuration["password"]
+    username = configuration["username"]
+    database = configuration["database"]
+    Mysql.new("#{hostname}", "#{username}", "#{password}" , "#{database}")
   end
 
   #method for getting data types
@@ -43,19 +50,25 @@ class SqlQuery
     query = create_query
     puts query
     connection = get_connection
-    model_name = "Simple1".downcase
+    model_name = "Simple2".downcase
     create_table = "CREATE TABLE IF NOT EXISTS #{model_name}(id INT PRIMARY KEY AUTO_INCREMENT NOT NULL, #{query})"
     connection.query(create_table)
 
   end
 
   def insert_into_table
+    connection = get_connection
     fields = get_columnname
-    p fileds
+     column_fileds = fields.join(",")
+     table_name = "simple1"
+     query = "INSERT INTO #{table_name} (#{column_fileds}) VALUES ('minakshi',12)"
+     puts query
+     connection.query(query)
   end
 
 end
 sql_query = SqlQuery.new
+sql_query.get_connection
 sql_query.create_table
 
 #SqlQuery.get_connection
