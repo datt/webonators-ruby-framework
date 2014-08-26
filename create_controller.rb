@@ -23,6 +23,7 @@ module CreateController
           action=ARGV[i].downcase
           create_files_in_view controller_name,action
           write_action_in_controller controller_name,action
+          write_in_routes controller_name,action
         end
       end
     end
@@ -53,10 +54,11 @@ module CreateController
     if  file.readline("class #{controller_name} < ActionController::Base")
       file.write("\n\s\sdef\s#{action}\n\s\send")
     end
-    file.write("\nend")
+    #file.write("\nend")
     file.close
   end
 
+=begin
   def self.write_to_file_in_controller_with_actions(controller_name)
     controller_name_class = controller_name.capitalize
     file=File.open("app/controllers/#{controller_name}_controller.rb", "w")
@@ -64,6 +66,7 @@ module CreateController
     file.write("\nend")
     file.close
   end
+=end
 
   def self.write_to_file_in_controller_without_actions(controller_name)
     controller_name_class = controller_name.capitalize
@@ -73,6 +76,11 @@ module CreateController
     file.close
   end
 
+  def self.write_in_routes (controller_name,action)
+      file = File.open("config/routes.rb","a")
+      file.write("goto '/#{controller_name}/#{action}', on '#{controller_name}##{action}', via: 'get'\n")
+      file.close
+  end
 
 end
 CreateController.read_command
