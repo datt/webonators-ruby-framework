@@ -1,7 +1,7 @@
-require_relative "run_model.rb"
+require_relative "generating_model.rb"
 class Model
-  def self.run_model
-    RunModel.get_model_parameter ARGV
+  def self.generating_model
+    GeneratingModel.get_model_parameter ARGV
   end
 end
-Model.run_model
+Model.generating_model
