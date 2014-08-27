@@ -1,4 +1,4 @@
-#require_relative "webo_model.rb"
+require_relative "webo_model.rb"
 require_relative "webo_controller.rb"
 module ExecuteGenerator
 
