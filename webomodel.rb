@@ -4,7 +4,7 @@ require_relative "generate_configuration.rb"
 require_relative "fileread.rb"
 
 #contains raw queries for creating , selecting , updataing database
-class SQLQuery
+class WeboModel
   #method for connecting to database
   include GenerateConfigurationFile
   include FileRead
@@ -16,7 +16,6 @@ class SQLQuery
     database = configuration["database"]
     Mysql.new("#{hostname}", "#{username}", "#{password}" , "#{database}")
   end
-
 
   def get_parameter
     parameter =FileRead.read_file
@@ -33,12 +32,33 @@ class SQLQuery
   def get_columnname
     @column_name
   end
-
+=begin
+  def mapping_datatype
+    get_parameter
+    datatype = get_datatypes
+    puts datatype
+      mapping_datatypes = {
+      "String"=>"VARCHAR(255)",
+      "integer" =>"number",
+      "float" => "double"
+     }
+     temp_arr= []
+     datatype.each do |data|
+      if mapping_datatypes.has_key?(data)
+        mapped_data = hash[data]
+        puts mapped_data
+        temp_arr.push(mapped_data)
+      end
+      p temp_arr
+    end
+  end
+=end
   def create_query
     get_parameter
     datatype = get_datatypes
     column_name = get_columnname
     datatype_arr = []
+
     datatype.each do |data|
       if data == 'String'
         datatype_arr.push("VARCHAR"+"(255)")
@@ -70,31 +90,41 @@ class SQLQuery
     create_table = "CREATE TABLE IF NOT EXISTS #{table_name}
                     (id INT PRIMARY KEY AUTO_INCREMENT NOT NULL ,
                     #{query})"
-    puts create_table
     connection.query(create_table)
 
   end
 
   def save args
     get_parameter
-    puts args
     connection = get_connection
     fields = get_columnname
     table_name = get_table_name
-    puts table_name
-     column_fileds = fields.join(",")
-     query = "INSERT INTO #{table_name} (#{column_fileds}) VALUES (#{args.join(",")}) )"
-     puts query
-     connection.query(query)
+    column_fileds = fields.join(",")
+    query = "INSERT INTO #{table_name} (#{column_fileds}) VALUES ('user') "
+    connection.query(query)
   end
 
   #method for selecting data from table
   def all
     connection = get_connection
     table_name = get_table_name
-    puts table_name
+    result_arr= []
     resultset = connection.query("SELECT * FROM #{table_name}")
-    puts resultset.inspect
+    rows_num = 0...resultset.num_rows
+    rows_num.each do |index|
+      resultset_hash = resultset.fetch_hash
+      result_arr.push(resultset_hash)
+    end
+    result_arr
+  end
+
+  # WHERE clause implementation
+  def find args
+    connection = get_connection
+    table_name = get_table_name
+    puts args
+    resultset = connection.query("SELECT * FROM #{table_name} WHERE id = #{args} ")
+    resultset.fetch_hash
   end
 
   def update_query
@@ -138,12 +168,12 @@ class SQLQuery
   end
 
 end
-sql_query = SQLQuery.new
+#sql_query = SQLQuery.new
 
 #sql_query.get_table_name
 #sql_query.get_parameter
 #sql_query.create_query
-sql_query.create_table
+#sql_query.create_table
 #sql_query.get_datatypes
 #sql_query.get_connection
 #sql_query.create_table
