@@ -1,3 +1,4 @@
+require_relative "webomodel.rb"
 module GeneratingModel
 
  def self.get_model_parameter argv
@@ -20,7 +21,6 @@ module GeneratingModel
         puts "Bad command..!!Try again"
       elsif validate_flag.eql?2
       end
-      create_class model_class_name,column_name
     end
   end
 
@@ -97,10 +97,11 @@ module GeneratingModel
   end
 
   def self.create_class model_class_name,column_name
-    klass = Object.const_set "#{model_class_name}",Class.new
-    eval("#{model_class_name}").class_eval do
+    puts "In create class"
+    klass = Class.new WeboModel
+    klass.class_eval do
       attr_accessor *column_name
     end
-    #Object.const_set #{model_class_name}_object",#eval("#{model_class_name}.new")
+    Object.const_set "#{model_class_name}",klass
   end
 end
