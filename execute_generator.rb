@@ -1,11 +1,11 @@
-require_relative "webomodel.rb"
-require_relative "webocontroller.rb"
+#require_relative "webo_model.rb"
+require_relative "webo_controller.rb"
 module ExecuteGenerator
 
   def self.get_model_parameter argv
-    if argv[1].eql?"model"
+    if argv[1] == "model" || argv[1] == "Model"
       call_for_model_operations argv
-    elsif argv[1].eql?"controller"
+    elsif argv[1] == "controller" || argv[1] == "Controller"
       call_for_controller_operations argv
     end
   end
