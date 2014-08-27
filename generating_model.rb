@@ -101,6 +101,6 @@ module GeneratingModel
     eval("#{model_class_name}").class_eval do
       attr_accessor *column_name
     end
-    Object.const_set "#{model_class_name}_object",eval("#{model_class_name}.new")
+    #Object.const_set #{model_class_name}_object",#eval("#{model_class_name}.new")
   end
 end
