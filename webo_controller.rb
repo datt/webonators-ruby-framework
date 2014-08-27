@@ -25,7 +25,8 @@ class WeboController
 
   def create args
     model_name = get_model_name
-    @obj = eval("#{model_name}.save args")
+    @obj = eval("#{model_name}.new")
+    @obj.save args
   end
 
   def edit
