@@ -1,7 +1,8 @@
 require_relative "execute_generator.rb"
 class Generator
   def self.generating_model_controller
-     argv = ["new","Controller","post","read", "write"]
+ #    argv = ["new","Controller","post","read", "write"]
+     argv = ["new","Model","post","string:name","integer:age"]
      ExecuteGenerator.get_model_parameter argv
      if argv[1] == "model" || argv[1] == "Model"
       model_class_name = argv[2].capitalize

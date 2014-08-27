@@ -96,7 +96,7 @@ module ExecuteGenerator
     arguement_counter = 0
     validate_flag = 0
     arguement_datatype = []
-    data_type = ["Integer","Float","Boolean","String"]
+    data_type = ["integer","float","boolean","string"]
     argv.each do |arguement|
       if arguement_counter>=3
         arguement_datatype = arguement.split(':')
@@ -120,11 +120,18 @@ module ExecuteGenerator
     write_file = File.open("#{@file_name}.rb","a+")
     write_file.each_line do |line|
       if line.scan"class #{model_class_name}"
-        while(loop_counter<=data_type.size-1)
-          write_file.write"\s\s#{column_name[loop_counter]}:#{data_type[loop_counter]}"
-          write_file.write"\n"
+        write_file.write "\s\s#Class Attribute should be added in hash\n"
+        write_file.write"\s\shash = {"
+        while(loop_counter <= data_type.size-1)
+          write_file.write"\"#{data_type[loop_counter]}\" => \"#{column_name[loop_counter]}\""
+          if loop_counter < (data_type.size-1)
+            write_file.write","
+          elsif loop_counter == (data_type.size-1)
+            write_file.write""
+          end
           loop_counter += 1
         end
+        write_file.write"}\n"
       end
     end
     write_file.write("end")
