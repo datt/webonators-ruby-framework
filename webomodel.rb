@@ -4,7 +4,7 @@ require_relative "generate_configuration.rb"
 require_relative "fileread.rb"
 
 #contains raw queries for creating , selecting , updataing database
-class SQLlQuery
+class SQLQuery
   #method for connecting to database
   include GenerateConfigurationFile
   include FileRead
@@ -26,7 +26,7 @@ class SQLlQuery
 
   #method for getting data types
   def get_datatypes
-     @datatype
+    @datatype
   end
 
   #method for getting column names
@@ -35,6 +35,7 @@ class SQLlQuery
   end
 
   def create_query
+    get_parameter
     datatype = get_datatypes
     column_name = get_columnname
     datatype_arr = []
@@ -74,19 +75,21 @@ class SQLlQuery
 
   end
 
-  def insert_into_table
+  def save args
+    get_parameter
+    puts args
     connection = get_connection
     fields = get_columnname
     table_name = get_table_name
     puts table_name
      column_fileds = fields.join(",")
-     query = "INSERT INTO #{table_name} (#{column_fileds}) VALUES ('minakshi',12)"
+     query = "INSERT INTO #{table_name} (#{column_fileds}) VALUES (#{args.join(",")}) )"
      puts query
      connection.query(query)
   end
 
   #method for selecting data from table
-  def select_data
+  def all
     connection = get_connection
     table_name = get_table_name
     puts table_name
@@ -94,13 +97,54 @@ class SQLlQuery
     puts resultset.inspect
   end
 
+  def update_query
+    value_arr = []
+    get_parameter
+    column_name = get_columnname
+    column_name.each do |element|
+      puts "enter updated value"
+      value = gets.chomp
+      value_arr.push(value)
+    end
+    query_arr = []
+    column_name.each_index do |i|
+       query ="#{column_name[i]} = #{value_arr[i]}"
+       query_arr.push(query)
+    end
+    query = query_arr.join(",")
+    query
+  end
 
+  # method for updating data
+  def update
+    get_parameter
+    table_name = get_table_name
+    connection = get_connection
+    raw_query = update_query
+    puts "enter which id you want to update"
+    id = Integer(gets.chomp)
+    query = "UPDATE #{table_name} SET #{raw_query}
+                        WHERE id = #{id}"
+    connection.query(query)
+  end
+
+  def destroy
+    connection = get_connection
+    table_name = get_table_name
+    puts "enter which id you want to delete"
+    id = Integer(gets.chomp)
+    query = "DELETE FROM #{table_name} WHERE id = #{id}"
+    connection.query(query)
+  end
 
 end
-sql_query = SQLlQuery.new
-sql_query.get_table_name
-sql_query.get_parameter
+sql_query = SQLQuery.new
+
+#sql_query.get_table_name
+#sql_query.get_parameter
+#sql_query.create_query
 sql_query.create_table
+#sql_query.get_datatypes
 #sql_query.get_connection
 #sql_query.create_table
 
