@@ -1,6 +1,0 @@
-class Post
-  varchar:name
-  int:marks
-  def create_post	 #auto generated
-  end
-end

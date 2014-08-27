@@ -1,8 +1,0 @@
-class Model
-	def create_model
-		puts "hello"
-		puts argv
-	end
-end
-m= Model.new
-m.create_model

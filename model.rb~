@@ -1,5 +1,0 @@
-class Model
-	def create_model *argv
-		puts argv
-	end
-end
