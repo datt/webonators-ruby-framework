@@ -92,11 +92,6 @@ class SQLlQuery
     puts table_name
     resultset = connection.query("SELECT * FROM #{table_name}")
     puts resultset.inspect
-
-    #rows_count = resultset.num_rows
-    #rows_count.times do
-     #   puts resultset.fetch_row.join("\s")
-    #end
   end
 
 
