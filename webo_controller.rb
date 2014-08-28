@@ -1,5 +1,5 @@
 class WeboController
-  
+
   def get_model_name
     class_name = self.class.inspect
     splitted = class_name.split /(?=[A-Z])/
@@ -12,7 +12,7 @@ class WeboController
     model_name = get_model_name
     eval("#{model_name}.all")
   end
-  
+
   def show :id
     model_name = get_model_name
     eval("#{model_name}.find :id")
