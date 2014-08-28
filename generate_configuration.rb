@@ -17,4 +17,11 @@ module GenerateConfigurationFile
     configuration = read_config_file
     configuration["development"]
   end
+
+  def self.create_routes_file
+    file = File.new("routes.rb", "w")
+    file.write(Constants::ROUTES_STRING)
+    file.close
+  end
+
 end
