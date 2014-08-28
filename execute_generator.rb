@@ -55,6 +55,7 @@ module ExecuteGenerator
         write_def_controller controller_name,action
         create_view_file action
         write_action_routes controller_name,action
+        write_to_view controller_name,action
       end
     elsif command_length ==3
     end
@@ -78,6 +79,15 @@ module ExecuteGenerator
 
   def self.create_view_file action
     File.new("#{action}.html.erb","w")
+  end
+
+  def self.write_to_view controller_name,action
+    file = File.open("#{action}.html.erb","a")
+    file.write("<html>\n\s\s<body>\n\s\s\s\s<h1>\n")
+    file.write("\s\s<%= \"You are in #{controller_name} Controller\'s #{action} Action\" %>\n")
+    file.write("\s\s\s\s</h1>\n")
+    file.write("\s\s</body>\n</html>\n")
+    file.close
   end
 
   def self.get_model_attribute argv
