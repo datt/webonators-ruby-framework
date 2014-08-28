@@ -4,7 +4,7 @@ class WeboController
     model_name = get_model_name
     eval("#{model_name}").send all
   end
-  
+
   def show :id
     model_name = get_model_name
     eval("#{model_name}").send find :id

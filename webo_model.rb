@@ -1,5 +1,5 @@
 #!/usr/bin/ruby
-require "mysql"
+require "mysql2"
 require_relative "generate_configuration.rb"
 require_relative "fileread.rb"
 
@@ -7,18 +7,21 @@ require_relative "fileread.rb"
 class WeboModel
   #method for connecting to database
   include GenerateConfigurationFile
-  include FileRead
+  include ModelFileRead
   def get_connection
     configuration = GenerateConfigurationFile.extract_configuration
+    puts configuration
+
     hostname = configuration["hostname"]
     password = configuration["password"]
     username = configuration["username"]
     database = configuration["database"]
-    Mysql.new("#{hostname}", "#{username}", "#{password}" , "#{database}")
+    connection = Mysql2::Client.new(:host => "#{hostname}", :username => "#{username}",
+                                    :password => "#{password}", :database =>"#{database}")
   end
 
   def get_parameter
-    parameter =FileRead.read_file
+    parameter =FileRead.read_model_file
     @column_name = parameter.keys
     @datatype = parameter.values
   end
@@ -32,27 +35,7 @@ class WeboModel
   def get_columnname
     @column_name
   end
-=begin
-  def mapping_datatype
-    get_parameter
-    datatype = get_datatypes
-    puts datatype
-      mapping_datatypes = {
-      "String"=>"VARCHAR(255)",
-      "integer" =>"number",
-      "float" => "double"
-     }
-     temp_arr= []
-     datatype.each do |data|
-      if mapping_datatypes.has_key?(data)
-        mapped_data = hash[data]
-        puts mapped_data
-        temp_arr.push(mapped_data)
-      end
-      p temp_arr
-    end
-  end
-=end
+
   def create_query
     get_parameter
     datatype = get_datatypes
@@ -77,7 +60,7 @@ class WeboModel
 
   ## this method will read model_name.rb and will get table name
   def get_table_name
-    table_name = FileRead.get_classname
+    table_name = ModelFileRead.get_classname
     table_name.downcase
   end
 
@@ -166,6 +149,8 @@ class WeboModel
     query = "DELETE FROM #{table_name} WHERE id = #{id}"
     connection.query(query)
   end
+
+
 
 end
 #sql_query = SQLQuery.new
