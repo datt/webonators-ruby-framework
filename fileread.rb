@@ -1,38 +1,33 @@
 #!/usr/bin/ruby
-module FileRead
-  def self.read_file
-    arr = []
-    File.open("post.rb", "r") do |file_pointer|
+require 'fileutils'
+module ModelFileRead
+  def self.read_model_file
+    attribute_arr = []
+    @model_file = "models/post.rb"
+    File.open(@model_file, "r") do |file_pointer|
       file_pointer.each_line do |line|
-        if line.start_with? "class"
-          file_pointer.each_line {|content| arr.push(content) unless content.start_with? "end"}
+        if line.include? "attribures"
+           attribute_arr = line
         end
       end
     end
-    temp_arr = []                        #tempory array for removing new line and blank spaces in array
-    arr.each do |element|
-      temp = element.gsub(/\n|\s/,"")     #tempory valiable which holds array elements without new line character
-      temp_arr.push(temp)                 #pushing elements to tempory array
-    end
-    parameter_array = []
-    temp_arr.each do |data|
-      temp = data.split(":")
-      parameter_array.push(temp)
-    end
-    parameter = Hash[parameter_array]
-    parameter
+    attribute_arr
+  end
+
+  def self.getattributes
+
+
+  end
+
+  def self.getmodel
+    models = Dir["models/**/*.rb"]
+    puts models
+    models
   end
 
   def self.get_classname
-    classname = []
-    File.open("post.rb", "r") do |file_pointer|
-      file_pointer.each_line do |line|
-        if line.start_with? "class"
-          classname = line.split(" ")
-        end
-      end
-    end
-    class_name = classname[1]
+    class_name = "post"
     class_name
   end
 end
+
