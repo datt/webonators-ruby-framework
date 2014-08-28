@@ -22,7 +22,7 @@ module ExecuteGenerator
       model_name = model_name.downcase
       model_class_name = model_name.capitalize
       validate_flag = validate argv
-      write_model = File.new("#{model_name}.rb","a")
+      write_model = File.open("app/models/#{model_name}.rb","a")
       write_model.write "class #{model_class_name} < WeboModel\n"
       write_model.close
       if validate_flag.eql?1
@@ -44,7 +44,7 @@ module ExecuteGenerator
     p controller_name
     controller_class_name = controller_name.capitalize
     p controller_class_name
-    write_controller = File.new("#{controller_name}_controller.rb","w")
+    write_controller = File.new("app/controllers/#{controller_name}_controller.rb","w")
     write_controller.write "class #{controller_class_name}Controller < WeboController\n"
     write_controller.close
     command_length = argv.length
@@ -60,29 +60,29 @@ module ExecuteGenerator
     elsif command_length ==3
     end
     create_controller_class_and_method controller_class_name,actions
-    write_controller = File.open("#{controller_name}_controller.rb","a")
+    write_controller = File.open("app/controllers/#{controller_name}_controller.rb","a")
     write_controller.write "\nend"
     write_controller.close
   end
 
   def self.write_def_controller controller_name,action
-    write_controller = File.open("#{controller_name}_controller.rb","a+")
+    write_controller = File.open("app/controllers/#{controller_name}_controller.rb","a+")
     write_controller.write("\n\s\sdef #{action}\n\s\send\n")
     write_controller.close
   end
 
   def self.write_action_routes controller_name,action
-    file = File.open("routes.rb","a")
+    file = File.open("config/routes.rb","a")
     file.write("goto '/#{controller_name}/#{action}', on '#{controller_name}##{action}', via: 'get'\n")
     file.close
   end
 
   def self.create_view_file action
-    File.new("#{action}.html.erb","w")
+    File.new("app/views/#{action}.html.erb","w")
   end
 
   def self.write_to_view controller_name,action
-    file = File.open("#{action}.html.erb","a")
+    file = File.open("app/views/#{action}.html.erb","a")
     file.write("<html>\n\s\s<body>\n\s\s\s\s<h1>\n")
     file.write("\s\s<%= \"You are in #{controller_name} Controller\'s #{action} Action\" %>\n")
     file.write("\s\s\s\s</h1>\n")
@@ -130,7 +130,7 @@ module ExecuteGenerator
 
   def self.set_column data_type,column_name,model_class_name
     loop_counter = 0
-    write_file = File.open("#{@file_name}.rb","a+")
+    write_file = File.open("app/models/#{@file_name}.rb","a+")
     write_file.each_line do |line|
       if line.scan"class #{model_class_name}"
         write_file.write "\s\s#Class Attribute should be added in hash\n"
@@ -157,7 +157,7 @@ module ExecuteGenerator
     if argv[0].eql?("new")
       unless argv[2].eql?("")
         @file_name = argv[2].downcase
-        create_file = File.new("#{@file_name}.rb","w")
+        create_file = File.new("app/models/#{@file_name}.rb","w")
         create_file.close
       end
       return @file_name
