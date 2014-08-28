@@ -38,13 +38,12 @@ module ExecuteGenerator
   def self.call_for_controller_operations argv
     actions = []
     controller_name = argv[2]
+    puts controller_name
     if controller_name[controller_name.length-1]!='s'
-      controller_name[controller_name.length]='s'
+      controller_name="#{controller_name}s"
     end
     controller_name = controller_name.downcase
-    p controller_name
     controller_class_name = controller_name.capitalize
-    p controller_class_name
     write_controller = File.new("app/controllers/#{controller_name}_controller.rb","w")
     write_controller.write "class #{controller_class_name}Controller < WeboController\n"
     write_controller.close
@@ -140,18 +139,11 @@ module ExecuteGenerator
     write_file = File.open("app/models/#{@file_name}.rb","a+")
     write_file.each_line do |line|
       if line.scan"class #{model_class_name}"
-        write_file.write "\s\s#Class Attribute should be added in hash\n"
-        write_file.write"\s\shash = {"
         while(loop_counter <= data_type.size-1)
-          write_file.write"\"#{data_type[loop_counter]}\" => \"#{column_name[loop_counter]}\""
-          if loop_counter < (data_type.size-1)
-            write_file.write","
-          elsif loop_counter == (data_type.size-1)
-            write_file.write""
-          end
+          write_file.write"\s\sattr_access :#{column_name[loop_counter]} , #{data_type[loop_counter]}\n"
           loop_counter += 1
         end
-        write_file.write"}\n"
+        write_file.write"\n"
       end
     end
     write_file.write("end")
