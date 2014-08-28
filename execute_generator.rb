@@ -35,7 +35,6 @@ module ExecuteGenerator
   end
 
   def self.call_for_controller_operations argv
-    actions = []
     controller_name = argv[2]
     if controller_name[controller_name.length-1]!='s'
       controller_name[controller_name.length]='s'
@@ -51,14 +50,12 @@ module ExecuteGenerator
     if command_length > 3
       for  loop_counter in 3...command_length
         action = argv[loop_counter].downcase
-        actions << action
         write_def_controller controller_name,action
         create_view_file action
         write_action_routes controller_name,action
       end
     elsif command_length ==3
     end
-    create_controller_class_and_method controller_class_name,actions
     write_controller = File.open("#{controller_name}_controller.rb","a")
     write_controller.write "\nend"
     write_controller.close
@@ -166,15 +163,8 @@ module ExecuteGenerator
     Object.const_set "#{model_class_name}",klass
   end
 
-  def self.create_controller_class_and_method controller_class_name,actions
-    controller_class_name = "#{controller_class_name}Controller"
+  def self.create_controller_class controller_class_name
     klass = Class.new WeboController
     Object.const_set "#{controller_class_name}",klass
-    klass.class_eval do
-      actions.each do |action|
-        define_method "#{action}" do
-        end
-      end
-    end
   end
 end
