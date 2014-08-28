@@ -1,8 +1,8 @@
 module Constants
   INFORMATION = {
-"development" => 
+"development" =>
   {
-  "adapter" => "mysql2", 
+  "adapter" => "mysql2",
   "database" => "test",
   "hostname" => "localhost",
   "username" => "root",
