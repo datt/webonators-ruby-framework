@@ -5,9 +5,9 @@ class WeboController
     eval("#{model_name}").send all
   end
   
-  def show :id
+  def show id
     model_name = get_model_name
-    eval("#{model_name}").send find :id
+    eval("#{model_name}").send find id
   end
 
   def new
@@ -27,12 +27,12 @@ class WeboController
 
   def update
     model_name = get_model_name
-    eval("#{model_name}").send update :id
+    eval("#{model_name}").send update id
   end
 
   def destroy
     model_name = get_model_name
-    eval("#{model_name}").send destroy :id
+    eval("#{model_name}").send destroy id
   end
 
   def render action
