@@ -35,6 +35,17 @@ class WeboController
     eval("#{model_name}").send destroy :id
   end
 
+  def render action
+    unless self.class.instance_methods.include? action
+      object = self.class.new
+      object.send action
+      template = Erubis::Eruby.new File.read("tmp/controller/#{action}.html.erb")
+      template.result(object.instance_eval {binding})
+    else
+      template = "<h1>Error 404. Page not found<h1><h2>Some error occurred due to routes.rb. Please check routes file.<h2>"
+    end
+  end
+
   private
 
     def get_model_name
