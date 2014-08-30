@@ -5,7 +5,6 @@ require 'fileutils'
 class GenerateAppDirectory
 
   def self.make_directory(app_name)
-    puts "make directory"
     directory_array = [
       ["#{app_name}","app", "controllers"],
       ["#{app_name}","app", "models"],
@@ -34,12 +33,8 @@ class GenerateAppDirectory
   end
 
   def self.generate_default_files(app_name)
-    puts "generate_default_files"
     File.new("#{app_name}/log/error.log","w")
     File.new("#{app_name}/log/application.log","w")
   end
 
 end
-#app_name =  ARGV[0]
-#GenerateAppDirectory.make_directory(app_name)
-#GenerateAppDirectory.generate_default_files(app_name)

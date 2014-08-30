@@ -6,17 +6,16 @@ require_relative "generate_configuration.rb"
 class WebitModel
   #method for connecting to database
   include GenerateConfigurationFile
-  #include ModelFileRead
+
   def get_connection
     configuration = GenerateConfigurationFile.extract_configuration
     puts configuration
-
     hostname = configuration["host"]
     password = configuration["password"]
     username = configuration["username"]
     database = configuration["database"]
     connection = Mysql2::Client.new(:host => "#{hostname}", :username => "#{username}",
-                                    :password => "#{password}", :database =>"#{database}")
+      :password => "#{password}", :database =>"#{database}")
   end
 
   def get_parameter
@@ -149,19 +148,4 @@ class WebitModel
     query = "DELETE FROM #{table_name} WHERE id = #{id}"
     connection.query(query)
   end
-
-
-
 end
-#sql_query = SQLQuery.new
-
-#sql_query.get_table_name
-#sql_query.get_parameter
-#sql_query.create_query
-#sql_query.create_table
-#sql_query.get_datatypes
-#sql_query.get_connection
-#sql_query.create_table
-
-#SqlQuery.get_connection
-#SqlQuery.get_datatypes

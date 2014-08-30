@@ -24,5 +24,4 @@ module GenerateConfigurationFile
     file.write(Constants::ROUTES_STRING)
     file.close
   end
-
 end

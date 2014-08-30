@@ -11,7 +11,7 @@ module Constants
 }
 
   TOP_STRING = "# MySQL version 5.x
-#   gem install mysql2
+# gem install mysql2
 #
 # This file contains database configuration for mysql2 gem
 # To change the credentials or hostname, change it in here...
@@ -21,8 +21,8 @@ module Constants
 # then list of keys and values
 
 # Database:
-#  adapter: sqlite3
-#  database: db/development.sqlite3\n"
+# adapter: sqlite3
+# database: db/development.sqlite3\n"
 
   ROUTES_STRING = "#\n#\n# Define routes for your application here.
 # Usage: goto '/controller/action' on ControllerName#action_name via: method
