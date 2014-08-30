@@ -3,15 +3,24 @@ require_relative "../lib/generators/generator_model_controller.rb"
 require_relative "../lib/generators/generate_app_directory.rb"
 module CreateApplication
   def self.identify_commandline_arguement
-    if ARGV[0].eql?"new"
-      if ARGV[1].eql?"app"
+    if ARGV[0].eql? "new"
+      if ARGV[1].eql? "app"
           GenerateAppDirectory.make_directory ARGV[2]
           GenerateAppDirectory.generate_default_files ARGV[2]
-      elsif ARGV[1] == "model" || ARGV[1] == "controller"
-        Generator.generating_model_controller ARGV
       end
-    elsif
-      puts "\tnew keyword is missing\nexample :- Command to create new application => webit new app application_name\n \tCommand to generate model => webit new model model_name data_type:column_name\n\t Command to generate controller => webit new controller controller_name actions"
+    elsif ARGV[0] == "generate" || ARGV[0] == "g"
+        if ARGV[1] == "model" || ARGV[1] == "controller"
+          Generator.generating_model_controller ARGV
+        end
+    elsif ARGV[0] == "start" && ARGV[1] == "server"
+      require_relative "../config.ru"
+    else
+      puts "Wrong Arguements:
+            Usage:
+            Command to create new application => webit new app application_name
+            Command to generate model => webit generate model model_name data_type:column_name
+            Command to generate controller => webit generate controller controller_name actions
+           "
     end
   end
 end

@@ -6,7 +6,7 @@ module ExecuteGenerator
   VALID = 1
   INVALID = 0
 
-  def self.get_model_parameter argv
+  def self.get_generator_parameter argv
     if argv[1] == "model" || argv[1] == "Model"
       call_for_model_operations argv
     elsif argv[1] == "controller" || argv[1] == "Controller"
@@ -33,6 +33,7 @@ module ExecuteGenerator
         data_type,column_name = get_model_attribute argv
         set_column data_type,column_name,model_class_name
       elsif validate_flag.eql? INVALID
+        puts "Wrong Syntax..Command to generate model => webit generate model "
       end
     end
   end
@@ -49,19 +50,18 @@ module ExecuteGenerator
     write_controller.write "class #{controller_class_name}Controller < WebitController\n"
     write_controller.close
     create_folder_in_view controller_name
-    command_length = argv.length
-    if command_length > 3
-      for  loop_counter in 3...command_length
-        action = argv[loop_counter].downcase
-        actions << action
-        write_def_controller controller_name,action
-        create_view_file controller_name,action
-        write_action_routes controller_name,action
-        write_to_view controller_name,action
+    if argv.length > 3
+      argv.each_with_index do |action, index|
+        if index >= 3
+          action = action.downcase
+          actions << action
+          write_def_controller controller_name,action
+          create_view_file controller_name,action
+          write_action_routes controller_name,action
+          write_to_view controller_name,action
+        end
       end
-    elsif command_length == 3
     end
-    create_controller_class_and_method controller_class_name,actions
     write_controller = File.open("app/controllers/#{controller_name}_controller.rb","a")
     write_controller.write "\nend"
     write_controller.close
@@ -154,7 +154,7 @@ module ExecuteGenerator
   def self.method_name argv
     create_model_flag = 0
     @file_name = "empty"
-    if argv[0].eql?("new")
+    if argv[0].eql?("generate") || argv[0].eql?("g")
       unless argv[2].eql?("")
         @file_name = argv[2].downcase
         create_file = File.new("app/models/#{@file_name}.rb","w")
@@ -164,26 +164,6 @@ module ExecuteGenerator
     end
     if create_model_flag.eql? 0
       return @file_name
-    end
-  end
-
-  def self.create_model_class model_class_name,column_name
-    klass = Class.new WebitModel
-    klass.class_eval do
-      attr_accessor *column_name
-    end
-    Object.const_set "#{model_class_name}",klass
-  end
-
-  def self.create_controller_class_and_method controller_class_name,actions
-    controller_class_name = "#{controller_class_name}Controller"
-    klass = Class.new WebitController
-    Object.const_set "#{controller_class_name}",klass
-    klass.class_eval do
-      actions.each do |action|
-        define_method "#{action}" do
-        end
-      end
     end
   end
 end
