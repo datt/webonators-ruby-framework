@@ -1,5 +1,6 @@
 require_relative "webo_model.rb"
 require_relative "webo_controller.rb"
+require 'fileutils'
 module ExecuteGenerator
 
   def self.get_model_parameter argv
@@ -37,23 +38,23 @@ module ExecuteGenerator
   def self.call_for_controller_operations argv
     actions = []
     controller_name = argv[2]
+    puts controller_name
     if controller_name[controller_name.length-1]!='s'
-      controller_name[controller_name.length]='s'
+      controller_name="#{controller_name}s"
     end
     controller_name = controller_name.downcase
-    p controller_name
     controller_class_name = controller_name.capitalize
-    p controller_class_name
     write_controller = File.new("app/controllers/#{controller_name}_controller.rb","w")
     write_controller.write "class #{controller_class_name}Controller < WeboController\n"
     write_controller.close
+    create_folder_in_view controller_name
     command_length = argv.length
     if command_length > 3
       for  loop_counter in 3...command_length
         action = argv[loop_counter].downcase
         actions << action
         write_def_controller controller_name,action
-        create_view_file action
+        create_view_file controller_name,action
         write_action_routes controller_name,action
         write_to_view controller_name,action
       end
@@ -71,18 +72,23 @@ module ExecuteGenerator
     write_controller.close
   end
 
+  def self.create_folder_in_view(controller_name)
+    path = "app/views/#{controller_name}"
+    FileUtils.mkdir_p(path) unless File.exists?(path)
+  end
+
   def self.write_action_routes controller_name,action
     file = File.open("config/routes.rb","a")
     file.write("goto '/#{controller_name}/#{action}', on '#{controller_name}##{action}', via: 'get'\n")
     file.close
   end
 
-  def self.create_view_file action
-    File.new("app/views/#{action}.html.erb","w")
+  def self.create_view_file controller_name,action
+    File.new("app/views/#{controller_name}/#{action}.html.erb","w")
   end
 
   def self.write_to_view controller_name,action
-    file = File.open("app/views/#{action}.html.erb","a")
+    file = File.open("app/views/#{controller_name}/#{action}.html.erb","a")
     file.write("<html>\n\s\s<body>\n\s\s\s\s<h1>\n")
     file.write("\s\s<%= \"You are in #{controller_name} Controller\'s #{action} Action\" %>\n")
     file.write("\s\s\s\s</h1>\n")
@@ -133,18 +139,11 @@ module ExecuteGenerator
     write_file = File.open("app/models/#{@file_name}.rb","a+")
     write_file.each_line do |line|
       if line.scan"class #{model_class_name}"
-        write_file.write "\s\s#Class Attribute should be added in hash\n"
-        write_file.write"\s\shash = {"
         while(loop_counter <= data_type.size-1)
-          write_file.write"\"#{data_type[loop_counter]}\" => \"#{column_name[loop_counter]}\""
-          if loop_counter < (data_type.size-1)
-            write_file.write","
-          elsif loop_counter == (data_type.size-1)
-            write_file.write""
-          end
+          write_file.write"\s\sattr_access :#{column_name[loop_counter]} , #{data_type[loop_counter]}\n"
           loop_counter += 1
         end
-        write_file.write"}\n"
+        write_file.write"\n"
       end
     end
     write_file.write("end")

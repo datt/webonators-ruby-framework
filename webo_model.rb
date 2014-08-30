@@ -3,15 +3,13 @@ require "mysql2"
 require_relative "generate_configuration.rb"
 require_relative "fileread.rb"
 
-#contains raw queries for creating , selecting , updataing database
 class WeboModel
-  #method for connecting to database
+  @@arr = {}
+  @@relationship ={}
   include GenerateConfigurationFile
   include ModelFileRead
   def get_connection
     configuration = GenerateConfigurationFile.extract_configuration
-    puts configuration
-
     hostname = configuration["hostname"]
     password = configuration["password"]
     username = configuration["username"]
@@ -20,30 +18,40 @@ class WeboModel
                                     :password => "#{password}", :database =>"#{database}")
   end
 
+  def self.attr_access(*attribute)
+      @@arr[attribute[0]] = attribute[1]
+  end
+
+  def self.belongs_to(attribute)
+    table_name = self.new.get_table_name
+    @@relationship["#{table_name}"] = attribute
+  end
+
+  def self.relationship
+    p @@relationship
+  end
+
   def get_parameter
     parameter =FileRead.read_model_file
     @column_name = parameter.keys
     @datatype = parameter.values
   end
 
-  #method for getting data types
   def get_datatypes
-    @datatype
+    datatypes = @@arr.values
   end
 
-  #method for getting column names
   def get_columnname
-    @column_name
+    column_name = @@arr.keys
   end
 
   def create_query
-    get_parameter
     datatype = get_datatypes
     column_name = get_columnname
     datatype_arr = []
-
+    puts datatype
     datatype.each do |data|
-      if data == 'String'
+      if data == 'string'
         datatype_arr.push("VARCHAR"+"(255)")
       else
         datatype_arr.push(data.upcase)
@@ -58,23 +66,37 @@ class WeboModel
     query
   end
 
-  ## this method will read model_name.rb and will get table name
   def get_table_name
     table_name = ModelFileRead.get_classname
     table_name.downcase
   end
 
-  #method for creating table
   def create_table
+    p @@relationship
     query = create_query
-    puts query
     connection = get_connection
     table_name = get_table_name
     create_table = "CREATE TABLE IF NOT EXISTS #{table_name}
                     (id INT PRIMARY KEY AUTO_INCREMENT NOT NULL ,
                     #{query})"
-    connection.query(create_table)
+    if @@relationship.empty?
+      connection.query(create_table)
+    else
+      add_foreign_key
+    end
+  end
 
+  def add_foreign_key
+
+    puts @@relationship
+    table_name1 = @@relationship.keys.join("")
+    table_name2 = @@relationship.values.join("")
+    alter = "ALTER TABLE #{table_name1}
+            ADD FOREIGN KEY (#{table_name2}_id)
+            REFERENCES #{table_name2}(id)"
+    puts alter
+    connection = get_connection
+    connection.query(alter)
   end
 
   def save args
@@ -87,7 +109,6 @@ class WeboModel
     connection.query(query)
   end
 
-  #method for selecting data from table
   def all
     connection = get_connection
     table_name = get_table_name
@@ -101,7 +122,6 @@ class WeboModel
     result_arr
   end
 
-  # WHERE clause implementation
   def find args
     connection = get_connection
     table_name = get_table_name
@@ -128,7 +148,6 @@ class WeboModel
     query
   end
 
-  # method for updating data
   def update
     get_parameter
     table_name = get_table_name
@@ -149,19 +168,5 @@ class WeboModel
     query = "DELETE FROM #{table_name} WHERE id = #{id}"
     connection.query(query)
   end
-
-
-
 end
-#sql_query = SQLQuery.new
 
-#sql_query.get_table_name
-#sql_query.get_parameter
-#sql_query.create_query
-#sql_query.create_table
-#sql_query.get_datatypes
-#sql_query.get_connection
-#sql_query.create_table
-
-#SqlQuery.get_connection
-#SqlQuery.get_datatypes
