@@ -36,7 +36,7 @@ class WeboController
   end
 
   def render action
-    unless self.class.instance_methods.include? action
+    if self.class.instance_methods.include? action
       object = self.class.new
       object.send action
       template = Erubis::Eruby.new File.read("tmp/controller/#{action}.html.erb")
