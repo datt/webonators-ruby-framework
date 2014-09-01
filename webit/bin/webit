@@ -9,6 +9,8 @@ module CreateApplication
         GenerateAppDirectory.make_directory ARGV[2]
         GenerateAppDirectory.generate_default_files ARGV[2]
         GenerateAppDirectory.generate_routes_file ARGV[2]
+        GenerateAppDirectory.write_config_file ARGV[2]
+        GenerateAppDirectory.write_application_file ARGV[2]
       else
         error_msg
       end

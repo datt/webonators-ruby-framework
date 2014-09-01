@@ -43,4 +43,21 @@ class GenerateAppDirectory
     File.new("#{app_name}/log/application.log","w")
   end
 
+  def self.write_config_file(app_name)
+    write_config = File.new("#{app_name}/config.ru","w")
+    write_config.write "#!/usr/bin/env ruby\n"
+    write_config.write "require ::File.expand_path('../application.rb', __FILE__)\n"
+    write_config.write "Rack::Server.start app: #{app_name}::Application, Port: 3000\n"
+    write_config.close
+  end
+
+  def self.write_application_file(app_name)
+    write_config = File.new("#{app_name}/config/application.rb","w+")
+    write_config.write "require ::File.expand_path('../config/routes.rb', __FILE__)\n"
+    write_config.write " Dir[\"#{app_name}/controllers/*.rb\"].each {|file| require file }\n"
+    write_config.write "module SampleApp\n"
+    write_config.write "\s\sclass Application < WeboController\n"
+    write_config.write "\s\send\n"
+    write_config.write "end\n"
+  end
 end
