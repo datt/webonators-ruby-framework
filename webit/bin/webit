@@ -1,6 +1,7 @@
 #!/usr/bin/ruby
-require ::FILE.expand_path("../lib/generators/generator_model_controller.rb", __FILE__)
-require ::FILE.expand_path("../lib/generators/generate_app_directory.rb", __FILE__)
+#require "fileutils"
+require ::File.expand_path("../../lib/generators/generator_model_controller.rb", __FILE__)
+require ::File.expand_path("../../lib/generators/generate_app_directory.rb", __FILE__)
 module CreateApplication
   def self.identify_commandline_arguement
     if ARGV[0].eql? "new"

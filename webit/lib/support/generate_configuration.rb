@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 require 'yaml'
-require ::FILE.expand_path("initializers.rb", __FILE__)
+require ::File.expand_path("../initializers.rb", __FILE__)
 
 module GenerateConfigurationFile
   def self.create

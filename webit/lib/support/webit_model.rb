@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
 require "mysql2"
-require ::FILE.expand_path("generate_configuration.rb", __FILE__)
+require ::File.expand_path("../generate_configuration.rb", __FILE__)
 
 #contains raw queries for creating , selecting , updataing database
 class WebitModel

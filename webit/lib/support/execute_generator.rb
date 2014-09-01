@@ -1,5 +1,5 @@
-require ::FILE.expand_path("webit_model.rb", __FILE__)
-require ::FILE.expand_path("webit_controller.rb", __FILE__)
+require ::File.expand_path("../webit_model.rb", __FILE__)
+require ::File.expand_path("../webit_controller.rb", __FILE__)
 require 'fileutils'
 module ExecuteGenerator
 
