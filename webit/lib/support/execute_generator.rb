@@ -65,6 +65,9 @@ module ExecuteGenerator
     write_controller = File.open("app/controllers/#{controller_name}_controller.rb","a")
     write_controller.write "\nend"
     write_controller.close
+    write_routes = File.open("config/routes.rb","a")
+    write_routes.write("\nend")
+    write_routes.close
   end
 
   def self.write_def_controller controller_name,action
@@ -79,9 +82,15 @@ module ExecuteGenerator
   end
 
   def self.write_action_routes controller_name,action
-    file = File.open("config/routes.rb","a")
-    file.write("goto '/#{controller_name}/#{action}', on '#{controller_name}##{action}', via: 'get'\n")
-    file.close
+    file = File.open("config/routes.rb","a+")
+    controller_class_name = controller_name.capitalize
+    controller_class_name = "#{controller_class_name}Controller"
+    if file.readline("class Routes < WeboRoutes")
+      file.write("\nget \'/#{controller_name}/#{action}\' do\n")
+      file.write("\s\sgoto \'#{controller_class_name}\',\s\'#{action}\'\n")
+      file.write("end\n")
+      file.close
+    end
   end
 
   def self.create_view_file controller_name,action

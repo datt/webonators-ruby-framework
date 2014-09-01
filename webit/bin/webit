@@ -6,23 +6,37 @@ module CreateApplication
   def self.identify_commandline_arguement
     if ARGV[0].eql? "new"
       if ARGV[1].eql? "app"
-          GenerateAppDirectory.make_directory ARGV[2]
-          GenerateAppDirectory.generate_default_files ARGV[2]
+        GenerateAppDirectory.make_directory ARGV[2]
+        GenerateAppDirectory.generate_default_files ARGV[2]
+        GenerateAppDirectory.generate_routes_file ARGV[2]
+      else
+        error_msg
       end
     elsif ARGV[0] == "generate" || ARGV[0] == "g"
-        if ARGV[1] == "model" || ARGV[1] == "controller"
-          Generator.generating_model_controller ARGV
-        end
-    elsif ARGV[0] == "start" && ARGV[1] == "server"
+      if ARGV[1] == "model" || ARGV[1] == "controller" ||  ARGV[1] == "Model" || ARGV[1] == "Controller"
+        Generator.generating_model_controller ARGV
+      else
+        error_msg
+      end
+    elsif ARGV[0] == "start" && (ARGV[1] == "server" || ARGV[1] == 's')
       require_relative "../config.ru"
     else
-      puts "Wrong Arguements:
-            Usage:
-            Command to create new application => webit new app application_name
-            Command to generate model => webit generate model model_name data_type:column_name
-            Command to generate controller => webit generate controller controller_name actions
-           "
+      error_msg
     end
+  end
+
+  def self.error_msg
+    puts "\nWrong Arguements:
+         ******** Usage: ********
+         **** Command to create new application : webit new app application_name ****
+         Example : webit new app sample_app
+         \n**** Command to generate model : webit generate model model_name data_type:column_name ****
+         Example (without attributes) : webit generate model person
+         Example (with attributes) : webit generate model person string:name integer:age
+         \n**** Command to generate controller : generate controller controller_name actions ****
+         Example (without actions) : webit generate controller account
+         Example (with actions) : webit generate controller account open close
+         "
   end
 end
 CreateApplication.identify_commandline_arguement

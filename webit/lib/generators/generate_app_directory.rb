@@ -32,6 +32,12 @@ class GenerateAppDirectory
 
   end
 
+  def self.generate_routes_file(app_name)
+    file=File.new("#{app_name}/config/routes.rb","w")
+    file.write("class Routes < WeboRoutes\n\n")
+    file.close
+  end
+
   def self.generate_default_files(app_name)
     File.new("#{app_name}/log/error.log","w")
     File.new("#{app_name}/log/application.log","w")
