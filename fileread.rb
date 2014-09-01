@@ -1,4 +1,6 @@
 #!/usr/bin/ruby
+
+#TODO: Remove this file, it is unenecessary
 require 'fileutils'
 module ModelFileRead
   def self.read_model_file

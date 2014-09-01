@@ -1,8 +1,7 @@
 #!/usr/bin/ruby
 require 'fileutils'
-=begin
-  class create directory structure when user creates new project in framework
-=end
+
+# Create directory structure when user creates new project in framework
 class GenerateAppDirectory
 
   def self.make_directory(app_name)

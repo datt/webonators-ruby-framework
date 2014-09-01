@@ -3,6 +3,9 @@ require_relative "webo_controller.rb"
 require 'fileutils'
 module ExecuteGenerator
 
+  VALID = 1
+  INVALID = 0
+
   def self.get_model_parameter argv
     if argv[1] == "model" || argv[1] == "Model"
       call_for_model_operations argv
@@ -26,11 +29,10 @@ module ExecuteGenerator
       write_model = File.open("app/models/#{model_name}.rb","a")
       write_model.write "class #{model_class_name} < WeboModel\n"
       write_model.close
-      if validate_flag.eql?1
+      if validate_flag.eql? VALID
         data_type,column_name = get_model_attribute argv
         set_column data_type,column_name,model_class_name
-      elsif validate_flag.eql?0
-       puts "Bad command..!!Try again"
+      elsif validate_flag.eql? INVALID
       end
     end
   end
@@ -58,7 +60,7 @@ module ExecuteGenerator
         write_action_routes controller_name,action
         write_to_view controller_name,action
       end
-    elsif command_length ==3
+    elsif command_length == 3
     end
     create_controller_class_and_method controller_class_name,actions
     write_controller = File.open("app/controllers/#{controller_name}_controller.rb","a")
@@ -101,14 +103,14 @@ module ExecuteGenerator
     data_type = []
     column_name = []
     argv.each do |arguement|
-      if arguement_counter>=3
+      if arguement_counter >= 3
         column = arguement.split(':')
         data_type << column[0]
         column_name << column[1]
       end
       arguement_counter += 1
     end
-    return data_type,column_name
+    data_type, column_name
   end
 
   def self.validate argv
@@ -117,7 +119,7 @@ module ExecuteGenerator
     arguement_datatype = []
     data_type = ["integer","float","boolean","string"]
     argv.each do |arguement|
-      if arguement_counter>=3
+      if arguement_counter >= 3
         arguement_datatype = arguement.split(':')
         if data_type.include?(arguement_datatype[0])
           validate_flag = 1
@@ -131,10 +133,10 @@ module ExecuteGenerator
       end
       arguement_counter += 1
     end
-    return validate_flag
+    validate_flag
   end
 
-  def self.set_column data_type,column_name,model_class_name
+  def self.set_column data_type, column_name, model_class_name
     loop_counter = 0
     write_file = File.open("app/models/#{@file_name}.rb","a+")
     write_file.each_line do |line|
@@ -162,7 +164,6 @@ module ExecuteGenerator
       return @file_name
     end
     if create_model_flag.eql? 0
-      puts "Sorry new keyword is missing"
       return @file_name
     end
   end
