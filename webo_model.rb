@@ -4,7 +4,7 @@ require_relative "generate_configuration.rb"
 require_relative "fileread.rb"
 
 #contains raw queries for creating , selecting , updataing database
-class WeboModel
+class WebitModel
   #method for connecting to database
   include GenerateConfigurationFile
   include ModelFileRead
@@ -12,7 +12,7 @@ class WeboModel
     configuration = GenerateConfigurationFile.extract_configuration
     puts configuration
 
-    hostname = configuration["hostname"]
+    hostname = configuration["host"]
     password = configuration["password"]
     username = configuration["username"]
     database = configuration["database"]
@@ -49,7 +49,8 @@ class WeboModel
         datatype_arr.push(data.upcase)
       end
     end
-    query_arr = []                              # tempory array for holding column name and datatype
+    # tempory array for holding column name and datatype
+    query_arr = []
     for i in 0...column_name.size
       query ="#{column_name[i]} #{datatype_arr[i]}"
       query_arr.push(query)

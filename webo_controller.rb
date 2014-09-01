@@ -4,7 +4,7 @@ class WeboController
     model_name = get_model_name
     eval("#{model_name}").send all
   end
-  
+
   def show id
     model_name = get_model_name
     eval("#{model_name}").send find id
@@ -49,10 +49,10 @@ class WeboController
   private
 
     def get_model_name
-      class_name = self.class.inspect
-      splitted = class_name.split /(?=[A-Z])/
-      splitted.delete_at -1
-      model_name_plural = splitted.join('')
+      class_name = self.class.name
+      # splitted = class_name.split /(?=[A-Z])/
+      class_name.delete_at -1
+      # model_name_plural = splitted.join('')
       model_name = model_name_plural[0...-1]
     end
 
