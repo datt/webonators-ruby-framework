@@ -1,44 +1,57 @@
 #!/usr/bin/ruby
 #require "fileutils"
+require 'yaml'
 require ::File.expand_path("../../lib/generators/generator_model_controller.rb", __FILE__)
 require ::File.expand_path("../../lib/generators/generate_app_directory.rb", __FILE__)
 module CreateApplication
+
+  def self.display_error
+    if File.file? "../webit/lib/support/error.yml"
+      @config_error = YAML.load_file('../webit/lib/support/error.yml')
+      @config_error = @config_error['error']
+    end
+  end
+
   def self.identify_commandline_arguement
     if ARGV[0].eql? "new"
       if ARGV[1].eql? "app"
-        GenerateAppDirectory.make_directory ARGV[2]
-        GenerateAppDirectory.generate_default_files ARGV[2]
-        GenerateAppDirectory.generate_routes_file ARGV[2]
-        GenerateAppDirectory.write_config_file ARGV[2]
-        GenerateAppDirectory.write_application_file ARGV[2]
+        if ARGV[2].nil?
+          puts "Application Name is missing\n USAGE - webit new app APP_NAME\n"
+        else
+          GenerateAppDirectory.make_directory ARGV[2]
+          GenerateAppDirectory.generate_default_files ARGV[2]
+          GenerateAppDirectory.generate_routes_file ARGV[2]
+          GenerateAppDirectory.write_config_file ARGV[2]
+          GenerateAppDirectory.write_application_file ARGV[2]
+        end
       else
-        error_msg
+        puts "Application Name not specified\n USAGE - webit new app APP_NAME\n"
       end
     elsif ARGV[0] == "generate" || ARGV[0] == "g"
       if ARGV[1] == "model" || ARGV[1] == "controller" ||  ARGV[1] == "Model" || ARGV[1] == "Controller"
-        Generator.generating_model_controller ARGV
+        if (ARGV[1] == "model" || ARGV[1] == "Model") && ARGV[2].nil?
+          puts @config_error['model_error']['show_error']
+          puts @config_error['model_error']['usage']
+        else Generator.generating_model_controller ARGV
+        end
+
+        if (ARGV[1] == "controller" || ARGV[1] == "Controller") && ARGV[2].nil?
+          puts @config_error['controller_error']['show_error']
+          puts @config_error['controller_error']['usage']
+        else Generator.generating_model_controller ARGV
+        end
       else
-        error_msg
+        puts @config_error['model_control_error']['show_error']
+        puts @config_error['model_error']['usage']
+        puts @config_error['controller_error']['usage']
       end
     elsif ARGV[0] == "start" && (ARGV[1] == "server" || ARGV[1] == 's')
       require_relative "../config.ru"
     else
-      error_msg
+      puts "Welcome to your Application"
     end
   end
 
-  def self.error_msg
-    puts "\nWrong Arguements:
-         ******** Usage: ********
-         **** Command to create new application : webit new app application_name ****
-         Example : webit new app sample_app
-         \n**** Command to generate model : webit generate model model_name data_type:column_name ****
-         Example (without attributes) : webit generate model person
-         Example (with attributes) : webit generate model person string:name integer:age
-         \n**** Command to generate controller : generate controller controller_name actions ****
-         Example (without actions) : webit generate controller account
-         Example (with actions) : webit generate controller account open close
-         "
-  end
 end
+CreateApplication.display_error
 CreateApplication.identify_commandline_arguement
