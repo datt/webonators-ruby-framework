@@ -41,9 +41,11 @@ module ExecuteGenerator
   def self.call_for_controller_operations argv
     actions = []
     controller_name = argv[2]
-    if controller_name[controller_name.length-1]!='s'
+    if argv[2].nil?
+      puts "Controller Name is not defined"
+    else
+      controller_name[controller_name.length-1]!='s'
       controller_name="#{controller_name}s"
-    end
     controller_name = controller_name.downcase
     controller_class_name = controller_name.capitalize
     write_controller = File.new("app/controllers/#{controller_name}_controller.rb","w")
@@ -62,6 +64,7 @@ module ExecuteGenerator
         end
       end
     end
+   end
     write_controller = File.open("app/controllers/#{controller_name}_controller.rb","a")
     write_controller.write "\nend"
     write_controller.close
@@ -165,7 +168,11 @@ module ExecuteGenerator
     @file_name = "empty"
     if argv[0].eql?("generate") || argv[0].eql?("g")
       unless argv[2].eql?("")
-        @file_name = argv[2].downcase
+        if argv[2].nil?
+          puts "Model Name is not defined"
+        else
+          @file_name = argv[2].downcase
+        end
         create_file = File.new("app/models/#{@file_name}.rb","w")
         create_file.close
       end
