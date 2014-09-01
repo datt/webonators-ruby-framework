@@ -38,6 +38,3 @@ class GenerateAppDirectory
   end
 
 end
-app_name =  ARGV[0]
-GenerateAppDirectory.make_directory(app_name)
-GenerateAppDirectory.generate_default_files(app_name)

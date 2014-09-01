@@ -1,12 +1,12 @@
-require_relative "webo_model.rb"
-require_relative "webo_controller.rb"
+require ::File.expand_path("../webit_model.rb", __FILE__)
+require ::File.expand_path("../webit_controller.rb", __FILE__)
 require 'fileutils'
 module ExecuteGenerator
 
   VALID = 1
   INVALID = 0
 
-  def self.get_model_parameter argv
+  def self.get_generator_parameter argv
     if argv[1] == "model" || argv[1] == "Model"
       call_for_model_operations argv
     elsif argv[1] == "controller" || argv[1] == "Controller"
@@ -27,12 +27,13 @@ module ExecuteGenerator
       model_class_name = model_name.capitalize
       validate_flag = validate argv
       write_model = File.open("app/models/#{model_name}.rb","a")
-      write_model.write "class #{model_class_name} < WeboModel\n"
+      write_model.write "class #{model_class_name} < WebitModel\n"
       write_model.close
       if validate_flag.eql? VALID
         data_type,column_name = get_model_attribute argv
         set_column data_type,column_name,model_class_name
       elsif validate_flag.eql? INVALID
+        puts "Wrong Syntax..Command to generate model => webit generate model "
       end
     end
   end
@@ -40,29 +41,27 @@ module ExecuteGenerator
   def self.call_for_controller_operations argv
     actions = []
     controller_name = argv[2]
-    puts controller_name
     if controller_name[controller_name.length-1]!='s'
       controller_name="#{controller_name}s"
     end
     controller_name = controller_name.downcase
     controller_class_name = controller_name.capitalize
     write_controller = File.new("app/controllers/#{controller_name}_controller.rb","w")
-    write_controller.write "class #{controller_class_name}Controller < WeboController\n"
+    write_controller.write "class #{controller_class_name}Controller < WebitController\n"
     write_controller.close
     create_folder_in_view controller_name
-    command_length = argv.length
-    if command_length > 3
-      for  loop_counter in 3...command_length
-        action = argv[loop_counter].downcase
-        actions << action
-        write_def_controller controller_name,action
-        create_view_file controller_name,action
-        write_action_routes controller_name,action
-        write_to_view controller_name,action
+    if argv.length > 3
+      argv.each_with_index do |action, index|
+        if index >= 3
+          action = action.downcase
+          actions << action
+          write_def_controller controller_name,action
+          create_view_file controller_name,action
+          write_action_routes controller_name,action
+          write_to_view controller_name,action
+        end
       end
-    elsif command_length == 3
     end
-    create_controller_class_and_method controller_class_name,actions
     write_controller = File.open("app/controllers/#{controller_name}_controller.rb","a")
     write_controller.write "\nend"
     write_controller.close
@@ -110,7 +109,7 @@ module ExecuteGenerator
       end
       arguement_counter += 1
     end
-    data_type, column_name
+    return data_type, column_name
   end
 
   def self.validate argv
@@ -142,7 +141,7 @@ module ExecuteGenerator
     write_file.each_line do |line|
       if line.scan"class #{model_class_name}"
         while(loop_counter <= data_type.size-1)
-          write_file.write"\s\sattr_access :#{column_name[loop_counter]} , #{data_type[loop_counter]}\n"
+          write_file.write"\s\sattr_access :#{column_name[loop_counter]} , :#{data_type[loop_counter]}\n"
           loop_counter += 1
         end
         write_file.write"\n"
@@ -155,7 +154,7 @@ module ExecuteGenerator
   def self.method_name argv
     create_model_flag = 0
     @file_name = "empty"
-    if argv[0].eql?("new")
+    if argv[0].eql?("generate") || argv[0].eql?("g")
       unless argv[2].eql?("")
         @file_name = argv[2].downcase
         create_file = File.new("app/models/#{@file_name}.rb","w")
@@ -165,26 +164,6 @@ module ExecuteGenerator
     end
     if create_model_flag.eql? 0
       return @file_name
-    end
-  end
-
-  def self.create_model_class model_class_name,column_name
-    klass = Class.new WeboModel
-    klass.class_eval do
-      attr_accessor *column_name
-    end
-    Object.const_set "#{model_class_name}",klass
-  end
-
-  def self.create_controller_class_and_method controller_class_name,actions
-    controller_class_name = "#{controller_class_name}Controller"
-    klass = Class.new WeboController
-    Object.const_set "#{controller_class_name}",klass
-    klass.class_eval do
-      actions.each do |action|
-        define_method "#{action}" do
-        end
-      end
     end
   end
 end

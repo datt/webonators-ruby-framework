@@ -2,22 +2,22 @@ class WebitController
 
   def index
     model_name = get_model_name
-    eval("#{model_name}").send all
+    model_name.send all
   end
 
   def show id
     model_name = get_model_name
-    eval("#{model_name}").send find id
+    model_name.send find id
   end
 
   def new
     model_name = get_model_name
-    @obj = eval("#{model_name}.new")
+    @obj = model_name.new
   end
 
   def create args
     model_name = get_model_name
-    @obj = eval("#{model_name}.new")
+    @obj = model_name.new
     @obj.save args
   end
 
@@ -27,12 +27,12 @@ class WebitController
 
   def update
     model_name = get_model_name
-    eval("#{model_name}").send update id
+    model_name.send update id
   end
 
   def destroy
     model_name = get_model_name
-    eval("#{model_name}").send destroy id
+    model_name.send destroy id
   end
 
   def render action
@@ -46,14 +46,12 @@ class WebitController
     end
   end
 
-  private
-
-    def get_model_name
-      class_name = self.class.name
-      # splitted = class_name.split /(?=[A-Z])/
-      class_name.delete_at -1
-      # model_name_plural = splitted.join('')
-      model_name = model_name_plural[0...-1]
+  def get_model_name
+    class_name = self.class.name
+    splitted = class_name.split /(?=[A-Z])/
+    splitted.delete_at -1
+    model_name_plural = splitted.join('')
+    model_name = model_name_plural[0...-1]
+    Object.const_set "#{model_name}", Class.new
     end
-
 end

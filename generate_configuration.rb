@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 require 'yaml'
-require_relative 'initializers.rb'
+require ::File.expand_path("../initializers.rb", __FILE__)
 
 module GenerateConfigurationFile
   def self.create
@@ -24,5 +24,4 @@ module GenerateConfigurationFile
     file.write(Constants::ROUTES_STRING)
     file.close
   end
-
 end
