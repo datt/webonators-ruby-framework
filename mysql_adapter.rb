@@ -14,7 +14,7 @@ class Mysql2Adapter
                     :date    => "date"
                   }
     parameter.each do |key,value|
-      parameter[key] =datatype_map[value]
+      parameter[key] = datatype_map[value]
     end
     parameter
   end
