@@ -1,4 +1,6 @@
-class WebitController
+require 'rack'
+require 'rack/respond_to'
+class WebitController < WebitView
 
   def index
     model_name = get_model_name
@@ -35,14 +37,45 @@ class WebitController
     model_name.send destroy id
   end
 
+  include Rack::RespondTo #mixes in #respond_to
+
+  def self.call(env)
+    request = Rack::Request.new(env)
+    path = request.path_info
+    params = request.params
+    # Pass in the env, and RespondTo will retrieve the requested media types
+    #response = Rack::Response.new
+    # Alternatively, to use standalone you can also assign the media types
+     # directly (this will take precedence over the env)
+    Rack::RespondTo.media_types = ['text/html']
+    body = respond_to do |format|
+      unless request.post?
+        format.html { render path }
+      else
+        format.html { render path, params}
+      end
+      #format.xml  { '<body>xml</body>' }
+    end
+    [200, {'Content-Type' => Rack::RespondTo.selected_media_type}, [body]]
+  end
+
+  #def redirect_to action
+  #  res = Rack::Response.new
+  #  res.redirect("localhost:3000/post/show")
+  #  res.finish
+  #end
+
   def render action
-    unless self.class.instance_methods.include? action
+    route_variables = self.class.parse_routes action
+    if self.class.instance_methods.include? :"#{action}"
       object = self.class.new
       object.send action
-      template = Erubis::Eruby.new File.read("tmp/controller/#{action}.html.erb")
+      template = Erubis::Eruby.new File.read("#{action}.html.erb")
       template.result(object.instance_eval {binding})
     else
-      template = "<h1>Error 404. Page not found<h1><h2>Some error occurred due to routes.rb. Please check routes file.<h2>"
+      template = "<h1>Error 404. Page not found</h1>
+      <h2>Some error occurred due to routes.rb. 
+      Please check routes file.</h2>"
     end
   end
 

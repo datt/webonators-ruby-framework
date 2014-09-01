@@ -1,29 +1,25 @@
-#!/usr/bin/env ruby
-require ::File.expand_path('../posts_controller',  __FILE__)
-require ::File.expand_path('../users_controller',  __FILE__)
 require 'erubis'
-require_relative 'routes.rb'
 
-module WebitView
+class WebitView
 
-  def self.parse_routes env
+  def self.parse_routes path_info
     routes = WebitRoutes.routes
     routes.each do |url, variables|
-      if url.eql? env['REQUEST_PATH']
-        return { url: url,
-                 method: variables[0],
-                 controller: variables[1],
+      if url.eql? path_info
+        return { url: url, 
+                 method: variables[0], 
+                 controller: variables[1], 
                  action: variables[2]
                }
       end
     end
   end
 
-  def self.render env, params=nil
+  def self.render path_info, params=nil
     puts "\n\n\nThis is webit view's render\n\n\n"
-    route_variables = parse_routes env
-    controller = Object.const_get "#{route_variables[:controller]}"
+    route_variables = parse_routes path_info
     unless route_variables.nil?
+      controller = Object.const_get "#{route_variables[:controller]}"
       object = controller.new
       if params
         object.send "#{route_variables[:action]}", params
@@ -38,4 +34,5 @@ module WebitView
                   Please check routes file.</h2>"
     end
   end
+
 end
