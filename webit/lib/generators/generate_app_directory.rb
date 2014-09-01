@@ -18,17 +18,17 @@ class GenerateAppDirectory
       user_choice = $stdin.gets.chomp
     else
       path_array= []
-        directory_array.each do |element|
-          path = element.join("/")
-          path_array.push(path)
-          if File.exists?path
-            puts "#{path} file is present "
-          else
-            FileUtils.mkdir_p(path) unless File.exists?(path)
-          end
+      directory_array.each do |element|
+        path = element.join("/")
+        path_array.push(path)
+        if File.exists?path
+          puts "#{path} file is present "
+        else
+          FileUtils.mkdir_p(path) unless File.exists?(path)
         end
-        path_array
       end
+      path_array
+    end
 
   end
 
