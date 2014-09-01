@@ -10,9 +10,9 @@ module WebitView
     routes = WebitRoutes.routes
     routes.each do |url, variables|
       if url.eql? env['REQUEST_PATH']
-        return { url: url, 
-                 method: variables[0], 
-                 controller: variables[1], 
+        return { url: url,
+                 method: variables[0],
+                 controller: variables[1],
                  action: variables[2]
                }
       end
