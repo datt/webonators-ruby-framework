@@ -1,7 +1,7 @@
 #!/usr/bin/ruby
 require "mysql2"
 require_relative "connection.rb"
-require_relative "mysql_adapter.rb"
+require_relative "./Adapter/mysql_adapter.rb"
 
 class WebitModel
   @@model_parameters = {}
@@ -28,7 +28,7 @@ class WebitModel
       add_column_query = klass.send("add_column",@relation)
       query = add_column_query.join("")
       puts query
-     # client.query(query)
+      client.query(query)
       add_foreign_key = klass.send("add_foreign_key",@relation)
       s = add_foreign_key
       client.query(s)
