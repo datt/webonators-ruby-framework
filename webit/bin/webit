@@ -6,8 +6,9 @@ require ::File.expand_path("../../lib/generators/generate_app_directory.rb", __F
 module CreateApplication
 
   def self.display_error
-    if File.file? "../webit/lib/support/error.yml"
-      @config_error = YAML.load_file('../webit/lib/support/error.yml')
+     path_error_yml = File.expand_path("../../lib/support/error.yml", __FILE__)
+    if File.file? "#{path_error_yml}"
+      @config_error = YAML.load_file("#{path_error_yml}")
       @config_error = @config_error['error']
     end
   end
