@@ -6,7 +6,6 @@ class WebitModel
 
   def self.attr_access(*attribute)
     @@model_parameters[attribute[0]] = attribute[1]
-    puts @@model_parameters
     field_name = @@model_parameters.keys
     field_name.each_index do |i|
       field_name[i] = field_name[i].to_s
@@ -20,20 +19,18 @@ class WebitModel
     @relation = {}
     @relation["#{self.get_table_name}"] = "#{attribute}"
     if @relation.empty?
-      puts "no reltion present"
+      puts "no relation present"
     else
       client, klass = self.get_connection
       table_name = self.get_table_name
       add_column_query = klass.send("add_column",@relation)
       query = add_column_query.join("")
-      puts query
       #client.query(query)
       add_foreign_key = klass.send("add_foreign_key",@relation)
       s = add_foreign_key
       client.query(s)
     end
     @related_table = @relation.values
-    puts @related_table
     @related_table
   end
 
@@ -46,7 +43,6 @@ class WebitModel
     count = self.class.count_records
     instance_variable_set("@id",count+1)
     hash.each do |key, value|
-      puts @@model_parameters.keys
 
       if @@model_parameters.has_key?(key.to_sym)
           instance_variable_set("@"+key,value)
@@ -62,33 +58,23 @@ class WebitModel
     fetch_count= klass.send("fetch_count", table_name)
     result = client.query(fetch_count)
     result.entries.first.values[0]
-
   end
 
   define_method("#{@related_table}") do |arg = nil|
     id = self.instance_variable_get("@id")
-    puts id
     table_name = self.class.get_table_name
     client, klass = self.class.get_connection
     table_name1 = "posts"
-    puts table_name
-    puts table_name1
     find_query = klass.send("fetch", table_name,table_name1, id)
-    puts find_query
     result = client.query(find_query)
-    puts result.entries
   end
 
-
-
   def self.get_table_name
-    puts self.name
     table_name =self.name.downcase
     str_len = table_name.length
     table_name = table_name.insert(str_len, "s")
     table_name
   end
-
 
   def self.get_connection
     connection = Connection.new
@@ -97,7 +83,6 @@ class WebitModel
     class_name = "#{class_name}Adapter"
     klass = Object.const_get class_name
     return client, klass
-
   end
 
   def self.create_table model_class_name,data_type,column_name
@@ -116,11 +101,9 @@ class WebitModel
     client, klass = self.get_connection
     table_name = self.get_table_name
     select_all_query = klass.send("all", table_name)
-    puts select_all_query
     result = client.query(select_all_query)
     client.close
     @count = result.count
-    puts @count
     result.entries
   end
 
@@ -149,7 +132,6 @@ class WebitModel
       value_arr.push(self.instance_variable_get("@#{key}"))
     end
     save_query =  klass.send("save", table_name, @@model_parameters,value_arr)
-    puts save_query
     client.query(save_query)
   end
 
@@ -159,5 +141,3 @@ class WebitModel
   #end
 
 end
-
-

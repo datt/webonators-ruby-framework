@@ -58,10 +58,19 @@ class GenerateAppDirectory
   def self.write_application_file(app_name)
     write_config = File.new("#{app_name}/config/application.rb","w+")
     write_config.write "require ::File.expand_path('../config/routes.rb', __FILE__)\n"
-    write_config.write " Dir[\"#{app_name}/controllers/*.rb\"].each {|file| require file }\n"
-    write_config.write "module SampleApp\n"
-    write_config.write "\s\sclass Application < WeboController\n"
+    write_config.write " Dir[\"#{app_name}/app/controllers/*.rb\"].each {|file| require file }\n"
+    write_config.write "module #{app_name}\n"
+    write_config.write "\s\sclass Application < Request\n"
     write_config.write "\s\send\n"
     write_config.write "end\n"
+  end
+
+  def self.write_gem_file(app_name)
+    write_gem = File.new("#{app_name}/Gemfile", "w")
+    write_gem.write "source 'https://rubygems.org'"
+    write_gem.write "gem 'rack'"
+    write_gem.write "gem 'rack-respond_to'"
+    write_gem.write "gem 'mysql2'"
+    write_gem.write "gem 'webit'"
   end
 end
