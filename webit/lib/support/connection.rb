@@ -1,13 +1,13 @@
 #!/usr/bin/ruby
 require "mysql2"
 require 'yaml'
-#require ::File.expand_path("../generate_configuration.rb", __FILE__)
 
 class Connection
 
   def self.read_config_file
     remove_comments = Array.new()
-    file = YAML.load_file("../database.yml")
+    path_database_yml = File.expand_path("../database.yml", __FILE__)
+    file = YAML.load_file("#{path_database_yml}")
   end
 
   def self.extract_configuration
