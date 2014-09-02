@@ -4,7 +4,6 @@ require "mysql2"
 
 class Mysql2Adapter
 
-
   def self.datatype_mapping parameter
     datatype_map = {
                     :string  => "varchar(255)",
@@ -16,6 +15,7 @@ class Mysql2Adapter
     parameter.each do |key,value|
       parameter[key] =datatype_map[value]
     end
+    @model_parameter = parameter
     parameter
   end
 
@@ -23,6 +23,7 @@ class Mysql2Adapter
     table_parameter = args[1]
     table_parameter = datatype_mapping table_parameter
     query_arr = []
+    puts table_parameter
     table_parameter.each do |field_name ,data_type|
       query = "#{field_name}"+" "+ "#{data_type}"
       query_arr.push(query)
@@ -80,7 +81,7 @@ class Mysql2Adapter
     p values
     value_arr = values.collect do |element|
       if element.is_a?(String)
-        "'element'"
+        "'#{element}'"
       else
         element
       end
@@ -91,7 +92,21 @@ class Mysql2Adapter
     end
     fields = fields.join(",")
     query = "INSERT INTO #{table_name} (#{fields}) VALUES (#{values}) "
+  end
 
+  def self.find_by(table_name,parameter, value)
+    if value.is_a?(String)
+      value = "'#{value}'"
+    end
+    query = "SELECT * from #{table_name} where #{parameter} = #{value} "
+  end
+
+  def self.search(table_name,referred_table,search_field,search_value)
+    if search_value.is_a?(String)
+      search_value = "'#{search_value}'"
+    end
+    query = "select * from #{table_name} where #{referred_table}_id in
+            (select id from #{referred_table} where #{search_field} = #{search_value});"
   end
 
   def update_query
