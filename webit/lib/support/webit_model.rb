@@ -1,151 +1,163 @@
-#!/usr/bin/ruby
 require "mysql2"
-require ::File.expand_path("../generate_configuration.rb", __FILE__)
-
-#contains raw queries for creating , selecting , updataing database
+require ::File.expand_path("../connection.rb", __FILE__)
+require ::File.expand_path("../mysql_adapter.rb", __FILE__)
 class WebitModel
-  #method for connecting to database
-  include GenerateConfigurationFile
+  @@model_parameters = {}
 
-  def get_connection
-    configuration = GenerateConfigurationFile.extract_configuration
-    puts configuration
-    hostname = configuration["host"]
-    password = configuration["password"]
-    username = configuration["username"]
-    database = configuration["database"]
-    connection = Mysql2::Client.new(:host => "#{hostname}", :username => "#{username}",
-      :password => "#{password}", :database =>"#{database}")
+  def self.attr_access(*attribute)
+    @@model_parameters[attribute[0]] = attribute[1]
+    puts @@model_parameters
+    field_name = @@model_parameters.keys
+    field_name.each_index do |i|
+      field_name[i] = field_name[i].to_s
+    end
+    self.class_eval do
+      attr_accessor attribute[0],:id
+    end
   end
 
-  def get_parameter
-    parameter =FileRead.read_model_file
-    @column_name = parameter.keys
-    @datatype = parameter.values
+  def self.has_many (attribute)
+    @relation = {}
+    @relation["#{self.get_table_name}"] = "#{attribute}"
+    if @relation.empty?
+      puts "no reltion present"
+    else
+      client, klass = self.get_connection
+      table_name = self.get_table_name
+      add_column_query = klass.send("add_column",@relation)
+      query = add_column_query.join("")
+      puts query
+      #client.query(query)
+      add_foreign_key = klass.send("add_foreign_key",@relation)
+      s = add_foreign_key
+      client.query(s)
+    end
+    @related_table = @relation.values
+    puts @related_table
+    @related_table
   end
 
-  #method for getting data types
-  def get_datatypes
-    @datatype
+  def get_related_table_name
+    @related_table = self.class.has_many
+    @related_table
   end
 
-  #method for getting column names
-  def get_columnname
-    @column_name
-  end
+  def initialize (hash)
+    count = self.class.count_records
+    instance_variable_set("@id",count+1)
+    hash.each do |key, value|
+      puts @@model_parameters.keys
 
-  def create_query
-    get_parameter
-    datatype = get_datatypes
-    column_name = get_columnname
-    datatype_arr = []
-
-    datatype.each do |data|
-      if data == 'String'
-        datatype_arr.push("VARCHAR"+"(255)")
+      if @@model_parameters.has_key?(key.to_sym)
+          instance_variable_set("@"+key,value)
       else
-        datatype_arr.push(data.upcase)
+        puts "#{key} is not in field name"
       end
     end
-    # tempory array for holding column name and datatype
-    query_arr = []
-    for i in 0...column_name.size
-      query ="#{column_name[i]} #{datatype_arr[i]}"
-      query_arr.push(query)
-    end
-    query = query_arr.join(",")
-    query
   end
 
-  ## this method will read model_name.rb and will get table name
-  def get_table_name
-    table_name = ModelFileRead.get_classname
-    table_name.downcase
-  end
-
-  #method for creating table
-  def create_table
-    query = create_query
-    puts query
-    connection = get_connection
-    table_name = get_table_name
-    create_table = "CREATE TABLE IF NOT EXISTS #{table_name}
-                    (id INT PRIMARY KEY AUTO_INCREMENT NOT NULL ,
-                    #{query})"
-    connection.query(create_table)
+  def self.count_records
+    client, klass = self.get_connection
+    table_name = self.get_table_name
+    fetch_count= klass.send("fetch_count", table_name)
+    result = client.query(fetch_count)
+    result.entries.first.values[0]
 
   end
 
-  def save args
-    get_parameter
-    connection = get_connection
-    fields = get_columnname
-    table_name = get_table_name
-    column_fileds = fields.join(",")
-    query = "INSERT INTO #{table_name} (#{column_fileds}) VALUES ('user') "
-    connection.query(query)
+  define_method("#{@related_table}") do |arg = nil|
+    id = self.instance_variable_get("@id")
+    puts id
+    table_name = self.class.get_table_name
+    client, klass = self.class.get_connection
+    table_name1 = "posts"
+    puts table_name
+    puts table_name1
+    find_query = klass.send("fetch", table_name,table_name1, id)
+    puts find_query
+    result = client.query(find_query)
+    puts result.entries
   end
 
-  #method for selecting data from table
-  def all
-    connection = get_connection
-    table_name = get_table_name
-    result_arr= []
-    resultset = connection.query("SELECT * FROM #{table_name}")
-    rows_num = 0...resultset.num_rows
-    rows_num.each do |index|
-      resultset_hash = resultset.fetch_hash
-      result_arr.push(resultset_hash)
-    end
-    result_arr
+
+
+  def self.get_table_name
+    table_name =self.name.downcase
+    str_len = table_name.length
+    table_name = table_name.insert(str_len, "s")
+    table_name
   end
 
-  # WHERE clause implementation
-  def find args
-    connection = get_connection
-    table_name = get_table_name
-    puts args
-    resultset = connection.query("SELECT * FROM #{table_name} WHERE id = #{args} ")
-    resultset.fetch_hash
+
+  def self.get_connection
+    connection = Connection.new
+    client = connection.establish_connection
+    class_name = client.class.name.split("::")[0]
+    class_name = "#{class_name}Adapter"
+    klass = Object.const_get class_name
+    return client, klass
+
   end
 
-  def update_query
+  def self.create_table model_class_name
+    model_class_name = model_class_name.capitalize
+    class_name = Object.const_set "#{model_class_name}", Class.new
+    puts class_name
+    puts class_name.methods
+    client, klass = class_name.get_connection
+    table_name = class_name.get_table_name
+    create_table_object = klass.send("create_table", table_name,@@model_parameters)
+    client.query(create_table_object)
+    client.close
+  end
+
+  def self.all
+    client, klass = self.get_connection
+    table_name = self.get_table_name
+    select_all_query = klass.send("all", table_name)
+    puts select_all_query
+    result = client.query(select_all_query)
+    client.close
+    @count = result.count
+    puts @count
+    result.entries
+  end
+
+  def self.show args
+    client, klass = self.get_connection
+    table_name = self.get_table_name
+    find_query = klass.send("show", table_name, args)
+    result = client.query(find_query)
+
+    client.close
+    result.entries
+  end
+
+  def self.destroy args
+    client, klass = self.get_connection
+    table_name = self.get_table_name
+    destroy_query =  klass.send("destroy", table_name, args)
+    client.query(destroy_query)
+    client.close
+  end
+
+  def save
+    client, klass = self.class.get_connection
+    table_name = self.class.get_table_name
     value_arr = []
-    get_parameter
-    column_name = get_columnname
-    column_name.each do |element|
-      puts "enter updated value"
-      value = gets.chomp
-      value_arr.push(value)
+    @@model_parameters.keys.each do |key|
+      value_arr.push(self.instance_variable_get("@#{key}"))
     end
-    query_arr = []
-    column_name.each_index do |i|
-       query ="#{column_name[i]} = #{value_arr[i]}"
-       query_arr.push(query)
-    end
-    query = query_arr.join(",")
-    query
+    save_query =  klass.send("save", table_name, @@model_parameters,value_arr)
+    puts save_query
+    client.query(save_query)
   end
 
-  # method for updating data
-  def update
-    get_parameter
-    table_name = get_table_name
-    connection = get_connection
-    raw_query = update_query
-    puts "enter which id you want to update"
-    id = Integer(gets.chomp)
-    query = "UPDATE #{table_name} SET #{raw_query}
-                        WHERE id = #{id}"
-    connection.query(query)
-  end
+  #def update *args
+  #  client, klass = WeboModel.get_connection
+  #  table_name = WeboModel.get_table_name
+  #end
 
-  def destroy
-    connection = get_connection
-    table_name = get_table_name
-    puts "enter which id you want to delete"
-    id = Integer(gets.chomp)
-    query = "DELETE FROM #{table_name} WHERE id = #{id}"
-    connection.query(query)
-  end
 end
+
+

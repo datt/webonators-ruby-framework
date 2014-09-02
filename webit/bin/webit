@@ -23,28 +23,40 @@ module CreateApplication
           GenerateAppDirectory.generate_routes_file ARGV[2]
           GenerateAppDirectory.write_config_file ARGV[2]
           GenerateAppDirectory.write_application_file ARGV[2]
+          GenerateAppDirectory.generate_database_yml
         end
       else
         puts "Application Name not specified\n USAGE - webit new app APP_NAME\n"
       end
+
     elsif ARGV[0] == "generate" || ARGV[0] == "g"
       if ARGV[1] == "model" || ARGV[1] == "controller" ||  ARGV[1] == "Model" || ARGV[1] == "Controller"
-        if (ARGV[1] == "model" || ARGV[1] == "Model") && ARGV[2].nil?
-          puts @config_error['model_error']['show_error']
-          puts @config_error['model_error']['usage']
-        else Generator.generating_model_controller ARGV
+
+        if (ARGV[1] == "model" || ARGV[1] == "Model")
+          if ARGV[2].nil?
+            puts @config_error['model_error']['show_error']
+            puts @config_error['model_error']['usage']
+          else
+            puts "model"
+            Generator.generating_model_controller ARGV
+          end
+        end
+        if (ARGV[1] == "controller" || ARGV[1] == "Controller")
+          if ARGV[2].nil?
+            puts @config_error['controller_error']['show_error']
+            puts @config_error['controller_error']['usage']
+          else
+            puts "controller"
+            Generator.generating_model_controller ARGV
+          end
         end
 
-        if (ARGV[1] == "controller" || ARGV[1] == "Controller") && ARGV[2].nil?
-          puts @config_error['controller_error']['show_error']
-          puts @config_error['controller_error']['usage']
-        else Generator.generating_model_controller ARGV
-        end
       else
         puts @config_error['model_control_error']['show_error']
         puts @config_error['model_error']['usage']
         puts @config_error['controller_error']['usage']
       end
+
     elsif ARGV[0] == "start" && (ARGV[1] == "server" || ARGV[1] == 's')
       require_relative "../config.ru"
     else

@@ -1,5 +1,5 @@
 require ::File.expand_path("../webit_model.rb", __FILE__)
-#require ::File.expand_path("../webit_controller.rb", __FILE__)
+require ::File.expand_path("../webit_controller.rb", __FILE__)
 require 'fileutils'
 module ExecuteGenerator
 
@@ -32,7 +32,7 @@ module ExecuteGenerator
       if validate_flag.eql? VALID
         data_type,column_name = get_model_attribute argv
         set_column data_type,column_name,model_class_name
-        WebitModel.create_table
+
       elsif validate_flag.eql? INVALID
         puts "Wrong Syntax..Command to generate model => webit generate model "
       end
@@ -40,6 +40,7 @@ module ExecuteGenerator
   end
 
   def self.call_for_controller_operations argv
+    puts "entry"
     actions = []
     controller_name = argv[2]
     if argv[2].nil?
@@ -53,9 +54,12 @@ module ExecuteGenerator
     write_controller.write "class #{controller_class_name}Controller < WebitController\n"
     write_controller.close
     create_folder_in_view controller_name
+    puts "hello"
     if argv.length > 3
+      p argv
       argv.each_with_index do |action, index|
-        if index >= 3
+        if index > 2
+          p action
           action = action.downcase
           actions << action
           write_def_controller controller_name,action
@@ -90,9 +94,9 @@ module ExecuteGenerator
     controller_class_name = controller_name.capitalize
     controller_class_name = "#{controller_class_name}Controller"
     if file.readline("class Routes < WeboRoutes")
-      file.write("\nget \'/#{controller_name}/#{action}\' do\n")
-      file.write("\s\sgoto \'#{controller_class_name}\',\s\'#{action}\'\n")
-      file.write("end\n")
+      file.write("\n\s\sget \'/#{controller_name}/#{action}\' do\n")
+      file.write("\s\s\s\sgoto \'#{controller_class_name}\',\s\'#{action}\'\n")
+      file.write("\s\send\n")
       file.close
     end
   end

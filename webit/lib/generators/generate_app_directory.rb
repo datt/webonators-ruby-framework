@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
 require 'fileutils'
-
+require ::File.expand_path("../../support/generate_configuration.rb", __FILE__)
 # Create directory structure when user creates new project in framework
 class GenerateAppDirectory
 
@@ -41,6 +41,11 @@ class GenerateAppDirectory
   def self.generate_default_files(app_name)
     File.new("#{app_name}/log/error.log","w")
     File.new("#{app_name}/log/application.log","w")
+  end
+
+  def self.generate_database_yml
+    puts "inside generate_app_directory.rb"
+    GenerateConfigurationFile.create
   end
 
   def self.write_config_file(app_name)
