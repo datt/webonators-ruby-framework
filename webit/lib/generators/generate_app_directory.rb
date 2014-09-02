@@ -63,6 +63,7 @@ class GenerateAppDirectory
     write_config.write "\s\sclass Application < Request\n"
     write_config.write "\s\send\n"
     write_config.write "end\n"
+    write_config.close
   end
 
   def self.write_gem_file(app_name)
@@ -72,5 +73,6 @@ class GenerateAppDirectory
     write_gem.write "gem 'rack-respond_to'"
     write_gem.write "gem 'mysql2'"
     write_gem.write "gem 'webit'"
+    write_gem.close
   end
 end
