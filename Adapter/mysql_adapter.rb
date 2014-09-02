@@ -20,6 +20,7 @@ class Mysql2Adapter < Adapter::Base
   end
 
   def self.create_table *args
+    if
     table_parameter = args[1]
     table_parameter = datatype_mapping table_parameter
     query_arr = []

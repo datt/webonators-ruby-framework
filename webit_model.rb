@@ -28,7 +28,7 @@ class WebitModel
       add_column_query = klass.send("add_column",@relation)
       query = add_column_query.join("")
       puts query
-      client.query(query)
+      #client.query(query)
       add_foreign_key = klass.send("add_foreign_key",@relation)
       s = add_foreign_key
       client.query(s)
@@ -48,7 +48,6 @@ class WebitModel
       end
     end
     self.class.find_by
-    #self.class.related_table
   end
 
   def self.belongs_to (attribute)
