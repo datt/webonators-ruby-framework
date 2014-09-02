@@ -37,7 +37,6 @@ module CreateApplication
             puts @config_error['model_error']['show_error']
             puts @config_error['model_error']['usage']
           else
-            puts "model"
             Generator.generating_model_controller ARGV
           end
         end
@@ -46,7 +45,6 @@ module CreateApplication
             puts @config_error['controller_error']['show_error']
             puts @config_error['controller_error']['usage']
           else
-            puts "controller"
             Generator.generating_model_controller ARGV
           end
         end

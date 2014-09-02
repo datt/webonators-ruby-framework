@@ -7,11 +7,11 @@ class Mysql2Adapter
 
   def self.datatype_mapping parameter
     datatype_map = {
-                    :string  => "varchar(255)",
-                    :text    => "varchar(512)",
-                    :int => "int",
-                    :float   => "float",
-                    :date    => "date"
+                    "string"  => "varchar(255)",
+                    "text"    => "varchar(512)",
+                    "integer"     => "int",
+                    "float"   => "float",
+                    "date"    => "date"
                   }
     parameter.each do |key,value|
       parameter[key] = datatype_map[value]

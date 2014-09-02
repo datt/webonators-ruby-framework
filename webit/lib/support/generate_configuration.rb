@@ -4,7 +4,6 @@ require ::File.expand_path("../initializers.rb", __FILE__)
 
 module GenerateConfigurationFile
   def self.create
-    puts "inside generate_configuration.rb"
     file = File.new("webit/lib/support/database.yml","w")
     file.write(Constants::TOP_STRING + (Constants::INFORMATION).to_yaml + Constants::BOTTOM_STRING)
     file.close

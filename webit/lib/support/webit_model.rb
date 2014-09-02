@@ -82,6 +82,7 @@ class WebitModel
 
 
   def self.get_table_name
+    puts self.name
     table_name =self.name.downcase
     str_len = table_name.length
     table_name = table_name.insert(str_len, "s")
@@ -99,14 +100,14 @@ class WebitModel
 
   end
 
-  def self.create_table model_class_name
+  def self.create_table model_class_name,data_type,column_name
+    table_name = model_class_name
     model_class_name = model_class_name.capitalize
-    class_name = Object.const_set "#{model_class_name}", Class.new
-    puts class_name
-    puts class_name.methods
-    client, klass = class_name.get_connection
-    table_name = class_name.get_table_name
-    create_table_object = klass.send("create_table", table_name,@@model_parameters)
+    model_class = Class.new WebitModel
+    table_name = "#{table_name}s"
+    client, klass = model_class.get_connection
+    model_parameters = Hash[column_name.zip data_type]
+    create_table_object = klass.send("create_table", table_name,model_parameters)
     client.query(create_table_object)
     client.close
   end
@@ -128,7 +129,6 @@ class WebitModel
     table_name = self.get_table_name
     find_query = klass.send("show", table_name, args)
     result = client.query(find_query)
-
     client.close
     result.entries
   end

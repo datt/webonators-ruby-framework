@@ -32,7 +32,7 @@ module ExecuteGenerator
       if validate_flag.eql? VALID
         data_type,column_name = get_model_attribute argv
         set_column data_type,column_name,model_class_name
-
+        WebitModel.create_table argv[2],data_type,column_name
       elsif validate_flag.eql? INVALID
         puts "Wrong Syntax..Command to generate model => webit generate model "
       end

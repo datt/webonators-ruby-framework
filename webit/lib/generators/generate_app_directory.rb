@@ -44,7 +44,6 @@ class GenerateAppDirectory
   end
 
   def self.generate_database_yml
-    puts "inside generate_app_directory.rb"
     GenerateConfigurationFile.create
   end
 
