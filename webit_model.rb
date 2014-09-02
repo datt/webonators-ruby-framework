@@ -107,7 +107,6 @@ class WebitModel
     create_table_object = klass.send("create_table", table_name,@@model_parameters)
     client.query(create_table_object)
     client.close
-
   end
 
   def self.all
