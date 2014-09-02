@@ -1,15 +1,16 @@
 require 'rack'
 require 'rack/respond_to'
+require_relative 'webit_view'
 class WebitController < WebitView
 
   def index
     model_name = get_model_name
-    model_name.send all
+    model_name.all
   end
 
   def show id
     model_name = get_model_name
-    model_name.send find id
+    model_name.show id
   end
 
   def new
@@ -17,10 +18,10 @@ class WebitController < WebitView
     @obj = model_name.new
   end
 
-  def create args
+  def create
     model_name = get_model_name
     @obj = model_name.new
-    @obj.save args
+    @obj.save
   end
 
   def edit
@@ -29,12 +30,12 @@ class WebitController < WebitView
 
   def update
     model_name = get_model_name
-    model_name.send update id
+    model_name.update id
   end
 
-  def destroy
+  def destroy id
     model_name = get_model_name
-    model_name.send destroy id
+    model_name.destroy id
   end
 
   include Rack::RespondTo #mixes in #respond_to
@@ -74,7 +75,7 @@ class WebitController < WebitView
       template.result(object.instance_eval {binding})
     else
       template = "<h1>Error 404. Page not found</h1>
-      <h2>Some error occurred due to routes.rb. 
+      <h2>Some error occurred due to routes.rb.
       Please check routes file.</h2>"
     end
   end
@@ -85,6 +86,6 @@ class WebitController < WebitView
     splitted.delete_at -1
     model_name_plural = splitted.join('')
     model_name = model_name_plural[0...-1]
-    Object.const_set "#{model_name}", Class.new
+    model_name = Object.const_get "#{model_name}"
     end
 end

@@ -1,9 +1,9 @@
 #!/usr/bin/ruby
 require "mysql2"
-require_relative "establish_connection.rb"
+require_relative "connection.rb"
 require_relative "mysql_adapter.rb"
 
-class WeboModel
+class WebitModel
   @@model_parameters = {}
 
   def self.attr_access(*attribute)
@@ -141,7 +141,7 @@ class WeboModel
   end
 
   def save
-    client, klass = WeboModel.get_connection
+    client, klass = self.class.get_connection
     table_name = self.class.get_table_name
     value_arr = []
     @@model_parameters.keys.each do |key|
@@ -152,10 +152,10 @@ class WeboModel
     client.query(save_query)
   end
 
-  def update *args
-    client, klass = WeboModel.get_connection
-    table_name = WeboModel.get_table_name
-  end
+  #def update *args
+  #  client, klass = WeboModel.get_connection
+  #  table_name = WeboModel.get_table_name
+  #end
 
 end
 

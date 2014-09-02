@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
 require "mysql2"
-require_relative "establish_connection.rb"
+#require_relative "establish_connection.rb"
 
 class Mysql2Adapter
 
