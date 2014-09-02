@@ -1,5 +1,5 @@
 require ::File.expand_path("../webit_model.rb", __FILE__)
-require ::File.expand_path("../webit_controller.rb", __FILE__)
+#require ::File.expand_path("../webit_controller.rb", __FILE__)
 require 'fileutils'
 module ExecuteGenerator
 
@@ -32,6 +32,7 @@ module ExecuteGenerator
       if validate_flag.eql? VALID
         data_type,column_name = get_model_attribute argv
         set_column data_type,column_name,model_class_name
+        WebitModel.create_table
       elsif validate_flag.eql? INVALID
         puts "Wrong Syntax..Command to generate model => webit generate model "
       end
