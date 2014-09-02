@@ -53,5 +53,5 @@ class WebitController
     model_name_plural = splitted.join('')
     model_name = model_name_plural[0...-1]
     model_name = Object.const_get "#{model_name}"
-    end
+  end
 end
