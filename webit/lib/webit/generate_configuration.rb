@@ -27,7 +27,8 @@ Rack::Server.start app: #{module_name}::Application, Port: 3000"
     module_name = module_name.join
     application_file_string = "require 'webit'
 require ::File.expand_path('../routes.rb', __FILE__)
-Dir[\"#{app_name}/app/controllers/*.rb\"].each {|file| require file }
+Dir[\"app/controllers/*.rb\"].each {|file| require_relative \"../\"+file}
+Dir[\"app/models/*.rb\"].each {|file| require_relative \"../\"+file}
 module #{module_name}
   class Application < Request
   end
