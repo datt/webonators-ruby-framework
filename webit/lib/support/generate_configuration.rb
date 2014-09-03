@@ -11,21 +11,21 @@ module GenerateConfigurationFile
   end
   def self.create_config_file app_name
     write_config = File.new("#{app_name}/config.ru","w")
-    CONFIG_FILE_STRING = "#!/usr/bin/env ruby
+    config_file_string = "#!/usr/bin/env ruby
 require ::File.expand_path('../application.rb', __FILE__)
 Rack::Server.start app: #{app_name}::Application, Port: 3000"
-    write_config.write CONFIG_FILE_STRING
+    write_config.write config_file_string
     write_config.close
   end
   def self.create_application_file app_name
     write_config = File.new("#{app_name}/config/application.rb","w+")
-    APPLICATION_FILE_STRING = "require ::File.expand_path('../config/routes.rb', __FILE__)
+    application_file_string = "require ::File.expand_path('../config/routes.rb', __FILE__)
 Dir[\"#{app_name}/app/controllers/*.rb\"].each {|file| require file }
 module #{app_name}
-\s\sclass Application < Request
-\s\send
+  class Application < Request
+  end
 end"
-    write_config.write APPLICATION_FILE_STRING
+    write_config.write application_file_string
     write_config.close
   end
   def self.create_gem_file app_name
