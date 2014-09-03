@@ -40,7 +40,6 @@ module ExecuteGenerator
   end
 
   def self.call_for_controller_operations argv
-    puts "entry"
     actions = []
     controller_name = argv[2]
     if argv[2].nil?
@@ -53,8 +52,6 @@ module ExecuteGenerator
     write_controller = File.new("app/controllers/#{controller_name}_controller.rb","w")
     write_controller.write "class #{controller_class_name}Controller < WebitController\n"
     write_controller.close
-    create_folder_in_view controller_name
-    puts "hello"
     if argv.length > 3
       p argv
       argv.each_with_index do |action, index|
@@ -84,16 +81,11 @@ module ExecuteGenerator
     write_controller.close
   end
 
-  def self.create_folder_in_view(controller_name)
-    path = "app/views/#{controller_name}"
-    FileUtils.mkdir_p(path) unless File.exists?(path)
-  end
-
   def self.write_action_routes controller_name,action
     file = File.open("config/routes.rb","a+")
     controller_class_name = controller_name.capitalize
     controller_class_name = "#{controller_class_name}Controller"
-    if file.readline("class Routes < WeboRoutes")
+    if file.readline("class Routes < WebitRoutes")
       file.write("\n\s\sget \'/#{controller_name}/#{action}\' do\n")
       file.write("\s\s\s\sgoto \'#{controller_class_name}\',\s\'#{action}\'\n")
       file.write("\s\send\n")

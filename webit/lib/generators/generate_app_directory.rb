@@ -42,19 +42,14 @@ class GenerateAppDirectory
     File.new("#{app_name}/log/application.log","w")
   end
 
-  def self.generate_database_yml
-    GenerateConfigurationFile.create_database_file
+  def self.generate app_name
+    GenerateAppDirectory.make_directory app_name
+    GenerateAppDirectory.generate_default_files app_name
+    GenerateAppDirectory.generate_routes_file app_name
+    GenerateConfiguration.create_database_file
+    GenerateConfiguration.create_config_file app_name
+    GenerateConfiguration.create_application_file app_name
+    GenerateConfiguration.create_gem_file app_name
   end
 
-  def self.write_config_file(app_name)
-    GenerateConfigurationFile.create_config_file app_name
-  end
-
-  def self.write_application_file(app_name)
-    GenerateConfigurationFile.create_application_file app_name
-  end
-
-  def self.write_gem_file(app_name)
-    GenerateConfigurationFile.create_gem_file app_name
-  end
 end

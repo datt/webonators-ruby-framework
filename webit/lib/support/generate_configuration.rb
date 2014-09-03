@@ -2,7 +2,7 @@
 require 'yaml'
 require ::File.expand_path("../initializers.rb", __FILE__)
 
-module GenerateConfigurationFile
+module GenerateConfiguration
   def self.create_database_file
     path_database_yml = File.expand_path("../database.yml", __FILE__)
     file = File.new("#{path_database_yml}","w")
@@ -13,7 +13,7 @@ module GenerateConfigurationFile
   def self.create_config_file app_name
     write_config = File.new("#{app_name}/config.ru","w")
     config_file_string = "#!/usr/bin/env ruby
-require ::File.expand_path('../application.rb', __FILE__)
+require ::File.expand_path(\"../config/application.rb\", __FILE__)
 Rack::Server.start app: #{app_name}::Application, Port: 3000"
     write_config.write config_file_string
     write_config.close

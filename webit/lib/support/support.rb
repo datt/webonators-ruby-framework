@@ -1,0 +1,6 @@
+require ::File.expand_path("../dispatcher", __FILE__)
+require ::File.expand_path("../webit_model", __FILE__)
+require ::File.expand_path("../webit_controller", __FILE__)
+require ::File.expand_path("../webit_routes", __FILE__)
+require ::File.expand_path("../request", __FILE__)
+require ::File.expand_path("../error.yml", __FILE__)
