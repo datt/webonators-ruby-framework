@@ -1,6 +1,0 @@
-require ::File.expand_path("support/dispatcher", __FILE__)
-require ::File.expand_path("support/webit_model", __FILE__)
-require ::File.expand_path("support/webit_controller", __FILE__)
-require ::File.expand_path("support/webit_routes", __FILE__)
-require ::File.expand_path("support/request", __FILE__)
-require ::File.expand_path("support/error.yml", __FILE__)

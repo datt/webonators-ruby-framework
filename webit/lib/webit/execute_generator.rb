@@ -27,7 +27,7 @@ module ExecuteGenerator
       model_class_name = model_name.capitalize
       validate_flag = validate argv
       write_model = File.open("app/models/#{model_name}.rb","a")
-      write_model.write "require 'webit'\nclass #{model_class_name} < WebitModel\n"
+      write_model.write "class #{model_class_name} < WebitModel\n"
       write_model.close
       if validate_flag.eql? VALID
         data_type,column_name = get_model_attribute argv
@@ -50,7 +50,7 @@ module ExecuteGenerator
     controller_name = controller_name.downcase
     controller_class_name = controller_name.capitalize
     write_controller = File.new("app/controllers/#{controller_name}_controller.rb","w")
-    write_controller.write "require 'webit'\nclass #{controller_class_name}Controller < WebitController\n"
+    write_controller.write "class #{controller_class_name}Controller < WebitController\n"
     write_controller.close
     if argv.length > 3
       p argv
@@ -85,7 +85,7 @@ module ExecuteGenerator
     file = File.open("config/routes.rb","a+")
     controller_class_name = controller_name.capitalize
     controller_class_name = "#{controller_class_name}Controller"
-    if file.readline("require 'webit'\nclass Routes < WebitRoutes")
+    if file.readline("class Routes < WebitRoutes")
       file.write("\n\s\sget \'/#{controller_name}/#{action}\' do\n")
       file.write("\s\s\s\sgoto \'#{controller_class_name}\',\s\'#{action}\'\n")
       file.write("\s\send\n")
