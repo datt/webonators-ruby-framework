@@ -3,26 +3,37 @@ require 'yaml'
 require ::File.expand_path("../initializers.rb", __FILE__)
 
 module GenerateConfigurationFile
-  def self.create
+  def self.create_database_file
     path_database_yml = File.expand_path("../database.yml", __FILE__)
     file = File.new("#{path_database_yml}","w")
-    file.write(Constants::TOP_STRING + (Constants::INFORMATION).to_yaml + Constants::BOTTOM_STRING)
+    file.write(Constants::DATABASE_TOP_STRING + (Constants::DATABASE_INFORMATION).to_yaml + Constants::DATABASE_BOTTOM_STRING)
     file.close
   end
 
-  # def self.read
-  #   remove_comments = []
-  #   file = YAML.load_file("database.yml")
-  # end
+  def self.create_config_file app_name
+    write_config = File.new("#{app_name}/config.ru","w")
+    config_file_string = "#!/usr/bin/env ruby
+require ::File.expand_path('../application.rb', __FILE__)
+Rack::Server.start app: #{app_name}::Application, Port: 3000"
+    write_config.write config_file_string
+    write_config.close
+  end
 
-  # def self.extract
-  #   configuration = read_config_file
-  #   configuration["development"]
-  # end
+  def self.create_application_file app_name
+    write_config = File.new("#{app_name}/config/application.rb","w+")
+    application_file_string = "require ::File.expand_path('../config/routes.rb', __FILE__)
+Dir[\"#{app_name}/app/controllers/*.rb\"].each {|file| require file }
+module #{app_name}
+\s\sclass Application < Request
+\s\send
+end"
+    write_config.write application_file_string
+    write_config.close
+  end
 
-  # def self.create_routes_file
-  #   file = File.new("routes.rb", "w")
-  #   file.write(Constants::ROUTES_STRING)
-  #   file.close
-  # end
+  def self.create_gem_file app_name
+    write_gem = File.new("#{app_name}/Gemfile", "w")
+    write_gem.write Constants::GEM_FILE_STRING
+    write_gem.close
+  end
 end
