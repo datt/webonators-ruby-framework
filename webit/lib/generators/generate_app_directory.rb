@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
 require 'fileutils'
-require ::File.expand_path("../../support/generate_configuration.rb", __FILE__)
+require ::File.expand_path("../../webit/generate_configuration.rb", __FILE__)
 # Create directory structure when user creates new project in framework
 class GenerateAppDirectory
 
@@ -9,7 +9,6 @@ class GenerateAppDirectory
       ["#{app_name}","app", "controllers"],
       ["#{app_name}","app", "models"],
       ["#{app_name}","app", "views"],
-      ["#{app_name}","db","migration"],
       ["#{app_name}","log"],
       ["#{app_name}","config"]
     ]
@@ -33,7 +32,7 @@ class GenerateAppDirectory
 
   def self.generate_routes_file(app_name)
     file=File.new("#{app_name}/config/routes.rb","w")
-    file.write("class Routes < WebitRoutes\n\nend")
+    file.write("require 'webit'\nclass Routes < WebitRoutes\n\nend")
     file.close
   end
 
