@@ -1,6 +1,6 @@
 require 'erubis'
 
-class WebitView
+class Dispatcher
 
   def self.parse_routes path_info
     routes = WebitRoutes.routes
@@ -15,24 +15,31 @@ class WebitView
     end
   end
 
-  def self.render path_info, params=nil
-    puts "\n\n\nThis is webit view's render\n\n\n"
-    route_variables = parse_routes path_info
+  def self.parse_id path_info
+    if path_info.match /[\d]+/
+      id = path_info.match /[\d]+/ 
+      id = id[0].to_i
+    else
+       id = nil
+     end
+     id
+   end
+
+   def self.dispatch path_info, params=nil
+    route_variables = parse_routes path_info.gsub /[\d]+/, ":id"
     unless route_variables.nil?
       controller = Object.const_get "#{route_variables[:controller]}"
       object = controller.new
-      if params
+      id = parse_id path_info
+      if params && id
+        object.send "#{route_variables[:action]}", id, params
+      elsif params
         object.send "#{route_variables[:action]}", params
+      elsif id
+        object.send "#{route_variables[:action]}", id
       else
         object.send "#{route_variables[:action]}"
       end
-      template = Erubis::Eruby.new File.read("#{route_variables[:action]}.html.erb")
-      template.result(object.instance_eval {binding})
-    else
-      template = "<h1>Error 404. Page not found</h1>
-                  <h2>Some error occurred due to routes.rb.
-                  Please check routes file.</h2>"
     end
   end
-
 end

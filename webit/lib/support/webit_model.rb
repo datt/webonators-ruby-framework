@@ -1,13 +1,7 @@
-#!/usr/bin/ruby
 require "mysql2"
-<<<<<<< HEAD
 require ::File.expand_path("../connection.rb", __FILE__)
 require ::File.expand_path("../mysql_adapter.rb", __FILE__)
-=======
-require_relative "connection.rb"
-require_relative "./Adapter/mysql_adapter.rb"
->>>>>>> c6b9cc085b7e1e2a593afc207f5c0d181c6068d7
-
+#require_relative "./Adapter/mysql_adapter.rb"
 class WebitModel
   @@model_parameters = {}
 
@@ -59,13 +53,12 @@ class WebitModel
     @relation = {}
     @relation["#{self.get_table_name}"] = "#{attribute}"
     self.attr_access("#{@relation.values.join(" ")}_id")
-
-    self.search
+    self.define_search
     attribute
 
   end
 
-  def self.search
+  def self.define_search
     referred_table = @relation.values.join(" ")
     define_method("search") do |*args|
       if args.length == 2
@@ -142,10 +135,14 @@ class WebitModel
 
   end
 
-  def self.create_table
-    client, klass = self.get_connection
-    table_name = self.get_table_name
-    create_table_object = klass.send("create_table", table_name,@@model_parameters)
+  def self.create_table(model_class_name,data_type,column_name)
+    table_name = model_class_name
+    model_class_name = model_class_name.capitalize
+    model_class = Class.new WebitModel
+    table_name = "#{table_name}s"
+    client, klass = model_class.get_connection
+    model_parameters = Hash[column_name.zip data_type]
+    create_table_object = klass.send("create_table", table_name,model_parameters)
     client.query(create_table_object)
     client.close
   end
