@@ -63,7 +63,7 @@ module ExecuteGenerator
           action = action.downcase
           actions << action
           write_def_controller controller_name,action
-          create_view_file controller_name,action
+          create_view_file action
           write_action_routes controller_name,action
           write_to_view controller_name,action
         end
@@ -101,12 +101,12 @@ module ExecuteGenerator
     end
   end
 
-  def self.create_view_file controller_name,action
-    File.new("app/views/#{controller_name}/#{action}.html.erb","w")
+  def self.create_view_file action
+    File.new("app/views/#{action}.html.erb","w")
   end
 
   def self.write_to_view controller_name,action
-    file = File.open("app/views/#{controller_name}/#{action}.html.erb","a")
+    file = File.open("app/views/#{action}.html.erb","a")
     file.write("<html>\n\s\s<body>\n\s\s\s\s<h1>\n")
     file.write("\s\s<%= \"You are in #{controller_name} Controller\'s #{action} Action\" %>\n")
     file.write("\s\s\s\s</h1>\n")
