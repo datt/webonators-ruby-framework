@@ -108,6 +108,7 @@ class WebitModel
     client, klass = model_class.get_connection
     model_parameters = Hash[column_name.zip data_type]
     create_table_object = klass.send("create_table", table_name,model_parameters)
+    puts create_table_object
     client.query(create_table_object)
     client.close
   end

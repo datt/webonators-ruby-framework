@@ -32,7 +32,7 @@ class Mysql2Adapter
       end
       query = query_arr.join(",")
       create_table_query = "CREATE TABLE IF NOT EXISTS #{table_name}
-                      (id INT PRIMARY KEY AUTO_INCREMENT NOT NULL )"
+                      (id INT PRIMARY KEY AUTO_INCREMENT NOT NULL, #{query} )"
     end
   end
 
