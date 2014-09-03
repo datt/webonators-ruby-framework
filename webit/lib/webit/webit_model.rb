@@ -42,7 +42,7 @@ class WebitModel
     @related_table
   end
 
-  def initialize (hash)
+  def initialize
     count = self.class.count_records
     instance_variable_set("@id",count+1)
     hash.each do |key, value|
@@ -107,6 +107,7 @@ class WebitModel
     table_name = "#{table_name}s"
     client, klass = model_class.get_connection
     model_parameters = Hash[column_name.zip data_type]
+    puts model_parameters
     create_table_object = klass.send("create_table", table_name,model_parameters)
     puts create_table_object
     client.query(create_table_object)
