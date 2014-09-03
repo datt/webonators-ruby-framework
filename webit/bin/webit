@@ -25,6 +25,7 @@ module CreateApplication
           GenerateAppDirectory.write_config_file ARGV[2]
           GenerateAppDirectory.write_application_file ARGV[2]
           GenerateAppDirectory.generate_database_yml
+          GenerateAppDirectory.write_gem_file
         end
       else
         puts "Application Name not specified\n USAGE - webit new app APP_NAME\n"

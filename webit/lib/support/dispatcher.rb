@@ -26,11 +26,11 @@ class Dispatcher
    end
 
    def self.dispatch path_info, params=nil
-     route_variables = parse_routes path_info.gsub /[\d]+/, ":id"
-     unless route_variables.nil?
-       controller = Object.const_get "#{route_variables[:controller]}"
-       object = controller.new
-       id = parse_id path_info
+    route_variables = parse_routes path_info.gsub /[\d]+/, ":id"
+    unless route_variables.nil?
+      controller = Object.const_get "#{route_variables[:controller]}"
+      object = controller.new
+      id = parse_id path_info
       if params && id
         object.send "#{route_variables[:action]}", id, params
       elsif params
