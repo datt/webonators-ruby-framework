@@ -6,15 +6,14 @@ require ::File.expand_path("../../lib/generators/generate_app_directory.rb", __F
 require ::File.expand_path("../../lib/webit.rb", __FILE__)
 module CreateApplication
 
-  def self.display_error
-     path_error_yml = File.expand_path("../../lib/webit/error.yml", __FILE__)
-    if File.file? "#{path_error_yml}"
-      @config_error = YAML.load_file("#{path_error_yml}")
-      @config_error = @config_error['error']
-    end
+  def self.error_msg(keys)
+    path_error_yml = File.expand_path("../../lib/webit/error.yml", __FILE__)
+    config_error = YAML.load_file("#{path_error_yml}")
+    keys.split(".").inject(config_error) { |config_error, key| config_error[key] }
   end
 
   def self.identify_commandline_arguement
+    constant = ["model","controller"]
     if ARGV[0].eql? "new"
       if ARGV[1].eql? "app"
         if ARGV[2].nil?
@@ -27,29 +26,31 @@ module CreateApplication
       end
 
     elsif ARGV[0] == "generate" || ARGV[0] == "g"
-      if ARGV[1] == "model" || ARGV[1] == "controller" ||  ARGV[1] == "Model" || ARGV[1] == "Controller"
+      if ARGV[1].nil?
+        puts CreateApplication.error_msg("error.model_control_error")
+      end
+      type = ARGV[1].downcase
 
-        if (ARGV[1] == "model" || ARGV[1] == "Model")
+      if constant.include?(type)
+
+        if type.eql? ("model")
           if ARGV[2].nil?
-            puts @config_error['model_error']['show_error']
-            puts @config_error['model_error']['usage']
+            puts CreateApplication.error_msg("error.model_error")
           else
             Generator.generating_model_controller ARGV
           end
         end
-        if (ARGV[1] == "controller" || ARGV[1] == "Controller")
+
+        if type.eql? ("controller")
           if ARGV[2].nil?
-            puts @config_error['controller_error']['show_error']
-            puts @config_error['controller_error']['usage']
+            puts CreateApplication.error_msg("error.controller_error")
           else
             Generator.generating_model_controller ARGV
           end
         end
 
       else
-        puts @config_error['model_control_error']['show_error']
-        puts @config_error['model_error']['usage']
-        puts @config_error['controller_error']['usage']
+        puts CreateApplication.error_msg("error.model_control_error")
       end
 
     elsif ARGV[0] == "start" && (ARGV[1] == "server" || ARGV[1] == 's')
@@ -58,7 +59,6 @@ module CreateApplication
       puts "Welcome to your Application"
     end
   end
-
 end
-CreateApplication.display_error
+
 CreateApplication.identify_commandline_arguement
