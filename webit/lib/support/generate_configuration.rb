@@ -9,6 +9,7 @@ module GenerateConfigurationFile
     file.write(Constants::DATABASE_TOP_STRING + (Constants::DATABASE_INFORMATION).to_yaml + Constants::DATABASE_BOTTOM_STRING)
     file.close
   end
+
   def self.create_config_file app_name
     write_config = File.new("#{app_name}/config.ru","w")
     config_file_string = "#!/usr/bin/env ruby
@@ -17,6 +18,7 @@ Rack::Server.start app: #{app_name}::Application, Port: 3000"
     write_config.write config_file_string
     write_config.close
   end
+
   def self.create_application_file app_name
     write_config = File.new("#{app_name}/config/application.rb","w+")
     application_file_string = "require ::File.expand_path('../config/routes.rb', __FILE__)
@@ -28,6 +30,7 @@ end"
     write_config.write application_file_string
     write_config.close
   end
+
   def self.create_gem_file app_name
     write_gem = File.new("#{app_name}/Gemfile", "w")
     write_gem.write Constants::GEM_FILE_STRING
