@@ -38,7 +38,8 @@ class WebitController
 
   def render action
     if self.class.instance_methods.include? :"#{action}"
-      template = Erubis::Eruby.new File.read("../views/#{action}.html.erb")
+      action_file = File.expand_path("../../views/#{action}.html.erb", __FILE__)
+      template = Erubis::Eruby.new File.read(action_file)
       template.result(binding)
     else
       template = "<h1>Error 404. Page not found</h1>
