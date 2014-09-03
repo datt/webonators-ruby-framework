@@ -19,22 +19,24 @@ class Mysql2Adapter
     parameter
   end
 
-  def self.create_table *args
-    table_parameter = args[1]
-    table_parameter = datatype_mapping table_parameter
-    query_arr = []
-    table_parameter.each do |field_name ,data_type|
-      query = "#{field_name}"+" "+ "#{data_type}"
-      query_arr.push(query)
+  def self.create_table(table_name,table_parameter)
+     if table_parameter.empty?
+      create_table_query = "CREATE TABLE IF NOT EXISTS #{table_name}
+                    (id INT PRIMARY KEY AUTO_INCREMENT NOT NULL )"
+    else
+      table_parameter = datatype_mapping table_parameter
+      query_arr = []
+      table_parameter.each do |field_name ,data_type|
+        query = "#{field_name}"+" "+ "#{data_type}"
+        query_arr.push(query)
+      end
+      query = query_arr.join(",")
+      create_table_query = "CREATE TABLE IF NOT EXISTS #{table_name}
+                      (id INT PRIMARY KEY AUTO_INCREMENT NOT NULL )"
     end
-    query = query_arr.join(",")
-    create_table_query = "CREATE TABLE IF NOT EXISTS #{args[0]}
-                    (id INT PRIMARY KEY AUTO_INCREMENT NOT NULL ,
-                    #{query})"
   end
 
-  def self.add_column args
-    relation = args
+  def self.add_column realtion
     query_relation_arr = []
     relation.each do |key,value|
       query = "alter table #{value}
@@ -44,34 +46,29 @@ class Mysql2Adapter
     query_relation_arr
   end
 
-  def self.add_foreign_key args
-    relation = args
-    puts args
+  def self.add_foreign_key realtion
     relation.each do |key,value|
     query = "alter table #{value}
-     add FOREIGN KEY (#{key}_id)
-     REFERENCES #{key}(id)
-    "
-    return query
+            add FOREIGN KEY (#{key}_id)
+            REFERENCES #{key}(id)
+             ON DELETE CASCADE"
     end
+    query
   end
 
-  def self.show *args
-    table_name = args[0]
-    id = args[1]
+  def self.show(table_name,id)
     resultset = "SELECT * FROM #{table_name} WHERE id = #{id} "
   end
 
   def self.fetch table_name, related_table,id
     resultset = "SELECT * FROM #{related_table} WHERE #{table_name}_id = #{id} "
   end
-  def self.all args
-    table_name = args
+  def self.all table_name
     select_all_query = "SELECT * FROM #{table_name}"
   end
 
-  def self.destroy *args
-    query = "DELETE FROM #{args[0]} WHERE id = #{args[1]}"
+  def self.destroy(table_name,id)
+    query = "DELETE FROM #{table_name} WHERE id = #{id}"
 
   end
 
