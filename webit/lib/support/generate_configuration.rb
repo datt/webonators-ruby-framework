@@ -21,7 +21,7 @@ Rack::Server.start app: #{app_name}::Application, Port: 3000"
 
   def self.create_application_file app_name
     write_config = File.new("#{app_name}/config/application.rb","w+")
-    application_file_string = "require ::File.expand_path('../config/routes.rb', __FILE__)
+    application_file_string = "require ::File.expand_path('../routes.rb', __FILE__)
 Dir[\"#{app_name}/app/controllers/*.rb\"].each {|file| require file }
 module #{app_name}
   class Application < Request

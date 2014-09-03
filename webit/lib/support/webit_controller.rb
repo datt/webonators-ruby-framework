@@ -1,3 +1,4 @@
+require "erubis"
 class WebitController
 
   def index
@@ -41,7 +42,7 @@ class WebitController
       template.result(binding)
     else
       template = "<h1>Error 404. Page not found</h1>
-      <h2>Some error occurred due to routes.rb. 
+      <h2>Some error occurred due to routes.rb.
       Please check routes file.</h2>"
     end
   end

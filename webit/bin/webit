@@ -4,7 +4,6 @@ require 'yaml'
 require ::File.expand_path("../../lib/generators/generator_model_controller.rb", __FILE__)
 require ::File.expand_path("../../lib/generators/generate_app_directory.rb", __FILE__)
 require ::File.expand_path("../../lib/support/support.rb", __FILE__)
-require ::File.expand_path("../../lib/support.rb", __FILE__)
 module CreateApplication
 
   def self.display_error

@@ -34,6 +34,7 @@ module Constants
 gem 'rack'
 gem 'rack-respond_to'
 gem 'mysql2'
+gem 'erubis'
 gem 'webit'"
 
 end
