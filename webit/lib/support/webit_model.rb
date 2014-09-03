@@ -1,12 +1,12 @@
-require "mysql2"
+ require "mysql2"
 require ::File.expand_path("../connection.rb", __FILE__)
 require ::File.expand_path("../mysql_adapter.rb", __FILE__)
-#require_relative "./Adapter/mysql_adapter.rb"
 class WebitModel
   @@model_parameters = {}
 
   def self.attr_access(*attribute)
     @@model_parameters[attribute[0]] = attribute[1]
+    puts @@model_parameters
     field_name = @@model_parameters.keys
     field_name.each_index do |i|
       field_name[i] = field_name[i].to_s
@@ -32,47 +32,26 @@ class WebitModel
       s = add_foreign_key
       client.query(s)
     end
-    self.attr_access(@relation.values.join(" "))
-    self.referring_table(@relation)
+    @related_table = @relation.values
+    puts @related_table
+    @related_table
   end
 
-  def initialize (hash={})
+  def get_related_table_name
+    @related_table = self.class.has_many
+    @related_table
+  end
+
+  def initialize (hash)
     count = self.class.count_records
     instance_variable_set("@id",count+1)
     hash.each do |key, value|
+      puts @@model_parameters.keys
+
       if @@model_parameters.has_key?(key.to_sym)
           instance_variable_set("@"+key,value)
       else
         puts "#{key} is not in field name"
-      end
-    end
-    self.class.find_by
-  end
-
-  def self.belongs_to (attribute)
-    @relation = {}
-    @relation["#{self.get_table_name}"] = "#{attribute}"
-    self.attr_access("#{@relation.values.join(" ")}_id")
-    self.define_search
-    attribute
-
-  end
-
-  def self.define_search
-    referred_table = @relation.values.join(" ")
-    define_method("search") do |*args|
-      if args.length == 2
-        search_field = args[0]
-        search_value = args[1]
-        client, klass = self.class.get_connection
-        table_name = self.class.get_table_name
-        select_query = klass.send("search",table_name, referred_table,search_field,search_value)
-        puts select_query
-        result = client.query(select_query)
-        puts result.entries
-        client.close
-      else
-        puts "wrong number or parameter.. expected search_field and search_value"
       end
     end
   end
@@ -82,42 +61,28 @@ class WebitModel
     table_name = self.get_table_name
     fetch_count= klass.send("fetch_count", table_name)
     result = client.query(fetch_count)
-    puts result.count
-    if result.count == 0
-      return 0
-    else
-      result.entries.first.values[0]
-    end
+    result.entries.first.values[0]
+
   end
 
-  def self.referring_table(relation)
-    table = relation.values.join(" ")
-    define_method("#{table}") do |arg = nil|
-      id = self.instance_variable_get("@id")
-      table_name = self.class.get_table_name
-      client, klass = self.class.get_connection
-      table_name1 = "posts"
-      find_query = klass.send("fetch", table_name,table, id)
-      puts find_query
-      result = client.query(find_query)
-      puts result.entries
-    end
+  define_method("#{@related_table}") do |arg = nil|
+    id = self.instance_variable_get("@id")
+    puts id
+    table_name = self.class.get_table_name
+    client, klass = self.class.get_connection
+    table_name1 = "posts"
+    puts table_name
+    puts table_name1
+    find_query = klass.send("fetch", table_name,table_name1, id)
+    puts find_query
+    result = client.query(find_query)
+    puts result.entries
   end
 
-  def self.find_by
-    @@model_parameters.keys.each do |action|
-      define_method("find_by_#{action}") do |argument|
-        client, klass = self.class.get_connection
-        table_name = self.class.get_table_name
-        find_by_query = klass.send("find_by", table_name,action,argument)
-        resultset = client.query(find_by_query)
-        client.close
-        resultset.entries
-      end
-    end
-  end
+
 
   def self.get_table_name
+    puts self.name
     table_name =self.name.downcase
     str_len = table_name.length
     table_name = table_name.insert(str_len, "s")
@@ -135,7 +100,7 @@ class WebitModel
 
   end
 
-  def self.create_table(model_class_name,data_type,column_name)
+  def self.create_table model_class_name,data_type,column_name
     table_name = model_class_name
     model_class_name = model_class_name.capitalize
     model_class = Class.new WebitModel
@@ -164,7 +129,6 @@ class WebitModel
     table_name = self.get_table_name
     find_query = klass.send("show", table_name, args)
     result = client.query(find_query)
-
     client.close
     result.entries
   end

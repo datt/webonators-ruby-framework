@@ -3,6 +3,8 @@
 require 'yaml'
 require ::File.expand_path("../../lib/generators/generator_model_controller.rb", __FILE__)
 require ::File.expand_path("../../lib/generators/generate_app_directory.rb", __FILE__)
+require ::File.expand_path("../../lib/support/support.rb", __FILE__)
+require ::File.expand_path("../../lib/support.rb", __FILE__)
 module CreateApplication
 
   def self.display_error
@@ -19,13 +21,7 @@ module CreateApplication
         if ARGV[2].nil?
           puts "Application Name is missing\n USAGE - webit new app APP_NAME\n"
         else
-          GenerateAppDirectory.make_directory ARGV[2]
-          GenerateAppDirectory.generate_default_files ARGV[2]
-          GenerateAppDirectory.generate_routes_file ARGV[2]
-          GenerateAppDirectory.write_config_file ARGV[2]
-          GenerateAppDirectory.write_application_file ARGV[2]
-          GenerateAppDirectory.generate_database_yml
-          GenerateAppDirectory.write_gem_file
+          GenerateAppDirectory.generate ARGV[2]
         end
       else
         puts "Application Name not specified\n USAGE - webit new app APP_NAME\n"
