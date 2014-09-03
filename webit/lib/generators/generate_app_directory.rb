@@ -32,7 +32,7 @@ class GenerateAppDirectory
 
   def self.generate_routes_file(app_name)
     file=File.new("#{app_name}/config/routes.rb","w")
-    file.write("require 'webit'\nclass Routes < WebitRoutes\n\nend")
+    file.write("class Routes < WebitRoutes\n\nend")
     file.close
   end
 

@@ -42,7 +42,7 @@ class WebitModel
     @related_table
   end
 
-  def initialize (hash)
+  def initialize
     count = self.class.count_records
     instance_variable_set("@id",count+1)
     hash.each do |key, value|
