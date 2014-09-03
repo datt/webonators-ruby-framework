@@ -16,7 +16,7 @@ module GenerateConfiguration
     module_name = module_name.join
     config_file_string = "#!/usr/bin/env ruby
 require ::File.expand_path(\"../config/application.rb\", __FILE__)
-Rack::Server.start app: #{module_name}::Application, Port: 3000"
+Rack::Handler::WEBrick.run( #{module_name}::Application, :Port => 3000)"
     write_config.write config_file_string
     write_config.close
   end
