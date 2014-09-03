@@ -51,7 +51,7 @@ module CreateApplication
         end
       elsif ARGV[0] == "start"
         if Dir.pwd.split("/").last == app_name
-          `rackup config.ru`
+          system "rackup config.ru"
         else
           puts "Please visit to root directory of Application to start!"
         end
