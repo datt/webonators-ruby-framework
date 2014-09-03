@@ -1,6 +1,7 @@
 require "mysql2"
 require ::File.expand_path("../connection.rb", __FILE__)
 require ::File.expand_path("../mysql_adapter.rb", __FILE__)
+#require_relative "./Adapter/mysql_adapter.rb"
 class WebitModel
   @@model_parameters = {}
 
@@ -19,35 +20,59 @@ class WebitModel
     @relation = {}
     @relation["#{self.get_table_name}"] = "#{attribute}"
     if @relation.empty?
-      puts "no relation present"
+      puts "no reltion present"
     else
       client, klass = self.get_connection
       table_name = self.get_table_name
       add_column_query = klass.send("add_column",@relation)
       query = add_column_query.join("")
+      puts query
       #client.query(query)
       add_foreign_key = klass.send("add_foreign_key",@relation)
       s = add_foreign_key
       client.query(s)
     end
-    @related_table = @relation.values
-    @related_table
+    self.attr_access(@relation.values.join(" "))
+    self.referring_table(@relation)
   end
 
-  def get_related_table_name
-    @related_table = self.class.has_many
-    @related_table
-  end
-
-  def initialize (hash)
+  def initialize (hash={})
     count = self.class.count_records
     instance_variable_set("@id",count+1)
     hash.each do |key, value|
-
       if @@model_parameters.has_key?(key.to_sym)
           instance_variable_set("@"+key,value)
       else
         puts "#{key} is not in field name"
+      end
+    end
+    self.class.find_by
+  end
+
+  def self.belongs_to (attribute)
+    @relation = {}
+    @relation["#{self.get_table_name}"] = "#{attribute}"
+    self.attr_access("#{@relation.values.join(" ")}_id")
+    self.define_search
+    attribute
+
+  end
+
+  def self.define_search
+    referred_table = @relation.values.join(" ")
+    define_method("search") do |*args|
+      if args.length == 2
+        search_field = args[0]
+        search_value = args[1]
+        client, klass = self.class.get_connection
+        table_name = self.class.get_table_name
+        select_query = klass.send("search",table_name, referred_table,search_field,search_value)
+        puts select_query
+        result = client.query(select_query)
+        puts result.entries
+        client.close
+      else
+        puts "wrong number or parameter.. expected search_field and search_value"
       end
     end
   end
@@ -57,16 +82,39 @@ class WebitModel
     table_name = self.get_table_name
     fetch_count= klass.send("fetch_count", table_name)
     result = client.query(fetch_count)
-    result.entries.first.values[0]
+    puts result.count
+    if result.count == 0
+      return 0
+    else
+      result.entries.first.values[0]
+    end
   end
 
-  define_method("#{@related_table}") do |arg = nil|
-    id = self.instance_variable_get("@id")
-    table_name = self.class.get_table_name
-    client, klass = self.class.get_connection
-    table_name1 = "posts"
-    find_query = klass.send("fetch", table_name,table_name1, id)
-    result = client.query(find_query)
+  def self.referring_table(relation)
+    table = relation.values.join(" ")
+    define_method("#{table}") do |arg = nil|
+      id = self.instance_variable_get("@id")
+      table_name = self.class.get_table_name
+      client, klass = self.class.get_connection
+      table_name1 = "posts"
+      find_query = klass.send("fetch", table_name,table, id)
+      puts find_query
+      result = client.query(find_query)
+      puts result.entries
+    end
+  end
+
+  def self.find_by
+    @@model_parameters.keys.each do |action|
+      define_method("find_by_#{action}") do |argument|
+        client, klass = self.class.get_connection
+        table_name = self.class.get_table_name
+        find_by_query = klass.send("find_by", table_name,action,argument)
+        resultset = client.query(find_by_query)
+        client.close
+        resultset.entries
+      end
+    end
   end
 
   def self.get_table_name
@@ -76,6 +124,7 @@ class WebitModel
     table_name
   end
 
+
   def self.get_connection
     connection = Connection.new
     client = connection.establish_connection
@@ -83,9 +132,10 @@ class WebitModel
     class_name = "#{class_name}Adapter"
     klass = Object.const_get class_name
     return client, klass
+
   end
 
-  def self.create_table model_class_name,data_type,column_name
+  def self.create_table(model_class_name,data_type,column_name)
     table_name = model_class_name
     model_class_name = model_class_name.capitalize
     model_class = Class.new WebitModel
@@ -101,9 +151,11 @@ class WebitModel
     client, klass = self.get_connection
     table_name = self.get_table_name
     select_all_query = klass.send("all", table_name)
+    puts select_all_query
     result = client.query(select_all_query)
     client.close
     @count = result.count
+    puts @count
     result.entries
   end
 
@@ -112,6 +164,7 @@ class WebitModel
     table_name = self.get_table_name
     find_query = klass.send("show", table_name, args)
     result = client.query(find_query)
+
     client.close
     result.entries
   end
@@ -132,6 +185,7 @@ class WebitModel
       value_arr.push(self.instance_variable_get("@#{key}"))
     end
     save_query =  klass.send("save", table_name, @@model_parameters,value_arr)
+    puts save_query
     client.query(save_query)
   end
 
@@ -141,3 +195,5 @@ class WebitModel
   #end
 
 end
+
+

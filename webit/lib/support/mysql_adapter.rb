@@ -1,6 +1,5 @@
 #!/usr/bin/ruby
 require "mysql2"
-#require_relative "establish_connection.rb"
 
 class Mysql2Adapter
 
@@ -19,7 +18,7 @@ class Mysql2Adapter
     parameter
   end
 
-  def self.create_table *args
+  def self.create_table(table_name,model_parameters)
     table_parameter = args[1]
     table_parameter = datatype_mapping table_parameter
     query_arr = []
@@ -56,22 +55,19 @@ class Mysql2Adapter
     end
   end
 
-  def self.show *args
-    table_name = args[0]
-    id = args[1]
+  def self.show(table_name, id)
     resultset = "SELECT * FROM #{table_name} WHERE id = #{id} "
   end
 
   def self.fetch table_name, related_table,id
     resultset = "SELECT * FROM #{related_table} WHERE #{table_name}_id = #{id} "
   end
-  def self.all args
-    table_name = args
+  def self.all table_name
     select_all_query = "SELECT * FROM #{table_name}"
   end
 
-  def self.destroy *args
-    query = "DELETE FROM #{args[0]} WHERE id = #{args[1]}"
+  def self.destroy(table_name,id)
+    query = "DELETE FROM #{table_name} WHERE id = #{id}"
 
   end
 
