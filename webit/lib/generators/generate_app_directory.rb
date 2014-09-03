@@ -29,7 +29,6 @@ class GenerateAppDirectory
       end
       path_array
     end
-
   end
 
   def self.generate_routes_file(app_name)
@@ -63,5 +62,6 @@ class GenerateAppDirectory
     write_config.write "\s\sclass Application < WeboController\n"
     write_config.write "\s\send\n"
     write_config.write "end\n"
+    write_config.close
   end
 end

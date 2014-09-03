@@ -42,7 +42,7 @@ class Mysql2Adapter
       query_relation_arr.push(query)
     end
     query_relation_arr
-   end
+  end
 
   def self.add_foreign_key args
     relation = args

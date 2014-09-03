@@ -1,4 +1,4 @@
-require "mysql2"
+ require "mysql2"
 require ::File.expand_path("../connection.rb", __FILE__)
 require ::File.expand_path("../mysql_adapter.rb", __FILE__)
 class WebitModel
