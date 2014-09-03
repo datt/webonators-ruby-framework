@@ -20,7 +20,6 @@ module CreateApplication
           puts "Application Name is missing\n USAGE - webit new app APP_NAME\n"
         else
           GenerateAppDirectory.generate ARGV[2]
-          app_name = ARGV[2]
         end
       else
         puts "Application Name not specified\n USAGE - webit new app APP_NAME\n"
@@ -49,18 +48,17 @@ module CreateApplication
             Generator.generating_model_controller ARGV
           end
         end
-      elsif ARGV[0] == "start"
-        if Dir.pwd.split("/").last == app_name
-          system "rackup config.ru"
-        else
-          puts "Please visit to root directory of Application to start!"
-        end
       else
         puts CreateApplication.error_msg("error.model_control_error")
       end
 
     elsif ARGV[0] == "start" && (ARGV[1] == "server" || ARGV[1] == 's')
-      require_relative "../config.ru"
+      begin
+        system "rackup config.ru"
+      rescue
+        puts "\nPlease run this command from root directory of your Application to start server!\n"
+      end
+      
     else
       puts "Welcome to your Application"
     end
