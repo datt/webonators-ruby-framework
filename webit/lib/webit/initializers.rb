@@ -1,23 +1,23 @@
 module Constants
-  INFORMATION = {
+  DATABASE_INFORMATION = {
 "development" =>
   {
   "adapter" => "mysql2",
   "database" => "test",
   "hostname" => "localhost",
   "username" => "root",
-  "password" => ""
+  "password" => "webonise6186"
   }
 }
 
-  TOP_STRING = "# MySQL version 5.x
+  DATABASE_TOP_STRING = "# MySQL version 5.x
 # gem install mysql2
 #
 # This file contains database configuration for mysql2 gem
 # To change the credentials or hostname, change it in here...
 # This field is meant only for database\n"
 
-  BOTTOM_STRING = "# You can add another yaml document below with a header and
+  DATABASE_BOTTOM_STRING = "# You can add another yaml document below with a header and
 # then list of keys and values
 
 # Database:
@@ -29,4 +29,12 @@ module Constants
 # Example:
 # goto '/user/1/show' on UsersController#show via: get
 # goto '/user/signin' on UsersController#signin via: post\n#\n#\n"
+
+  GEM_FILE_STRING = "source 'https://rubygems.org'
+gem 'rack'
+gem 'rack-respond_to'
+gem 'mysql2'
+gem 'erubis'
+gem 'webit'"
+
 end

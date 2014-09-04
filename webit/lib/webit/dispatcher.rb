@@ -1,14 +1,12 @@
-require 'erubis'
-
 class Dispatcher
 
   def self.parse_routes path_info
     routes = WebitRoutes.routes
     routes.each do |url, variables|
       if url.eql? path_info
-        return { url: url, 
-                 method: variables[0], 
-                 controller: variables[1], 
+        return { url: url,
+                 method: variables[0],
+                 controller: variables[1],
                  action: variables[2]
                }
       end
@@ -17,7 +15,7 @@ class Dispatcher
 
   def self.parse_id path_info
     if path_info.match /[\d]+/
-      id = path_info.match /[\d]+/ 
+      id = path_info.match /[\d]+/
       id = id[0].to_i
     else
        id = nil

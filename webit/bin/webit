@@ -1,68 +1,81 @@
 #!/usr/bin/ruby
-#require "fileutils"
 require 'yaml'
 require ::File.expand_path("../../lib/generators/generator_model_controller.rb", __FILE__)
 require ::File.expand_path("../../lib/generators/generate_app_directory.rb", __FILE__)
+require ::File.expand_path("../../lib/webit.rb", __FILE__)
 module CreateApplication
 
-  def self.display_error
-     path_error_yml = File.expand_path("../../lib/support/error.yml", __FILE__)
-    if File.file? "#{path_error_yml}"
-      @config_error = YAML.load_file("#{path_error_yml}")
-      @config_error = @config_error['error']
-    end
+  def self.error_msg(keys)
+    path_error_yml = File.expand_path("../../lib/webit/error.yml", __FILE__)
+    config_error = YAML.load_file("#{path_error_yml}")
+    keys.split(".").inject(config_error) { |config_error, key| config_error[key] }
   end
 
   def self.identify_commandline_arguement
-    if ARGV[0].eql? "new"
-      if ARGV[1].eql? "app"
-        if ARGV[2].nil?
-          puts "Application Name is missing\n USAGE - webit new app APP_NAME\n"
-        else
-          GenerateAppDirectory.make_directory ARGV[2]
-          GenerateAppDirectory.generate_default_files ARGV[2]
-          GenerateAppDirectory.generate_routes_file ARGV[2]
-          GenerateAppDirectory.write_config_file ARGV[2]
-          GenerateAppDirectory.write_application_file ARGV[2]
-          GenerateAppDirectory.generate_database_yml
-        end
+    case ARGV[0]
+      when "new"
+        CreateApplication.create_app
+      when "g" || "generate"
+        CreateApplication.create_model_controller
+      when "start"
+        CreateApplication.start_server
       else
-        puts "Application Name not specified\n USAGE - webit new app APP_NAME\n"
-      end
+       puts "Webit Version v-0.0.1"
+    end
+  end
 
-    elsif ARGV[0] == "generate" || ARGV[0] == "g"
-      if ARGV[1] == "model" || ARGV[1] == "controller" ||  ARGV[1] == "Model" || ARGV[1] == "Controller"
-
-        if (ARGV[1] == "model" || ARGV[1] == "Model")
-          if ARGV[2].nil?
-            puts @config_error['model_error']['show_error']
-            puts @config_error['model_error']['usage']
-          else
-            Generator.generating_model_controller ARGV
-          end
-        end
-        if (ARGV[1] == "controller" || ARGV[1] == "Controller")
-          if ARGV[2].nil?
-            puts @config_error['controller_error']['show_error']
-            puts @config_error['controller_error']['usage']
-          else
-            Generator.generating_model_controller ARGV
-          end
-        end
-
+  def self.create_app
+    if ARGV[1].eql? "app"
+      if ARGV[2].nil?
+        puts "Application Name is missing\n USAGE - webit new app APP_NAME\n"
       else
-        puts @config_error['model_control_error']['show_error']
-        puts @config_error['model_error']['usage']
-        puts @config_error['controller_error']['usage']
+        GenerateAppDirectory.generate ARGV[2]
       end
-
-    elsif ARGV[0] == "start" && (ARGV[1] == "server" || ARGV[1] == 's')
-      require_relative "../config.ru"
     else
-      puts "Welcome to your Application"
+      puts "Application Name not specified\n USAGE - webit new app APP_NAME\n"
+    end
+  end
+
+  def self.create_model_controller
+    constant = ["model","controller"]
+    if ARGV[1].nil?
+      puts CreateApplication.error_msg("error.model_control_error")
+    else
+      type = ARGV[1].downcase
+    end
+    if constant.include?(type)
+      if type.eql? ("model")
+        if ARGV[2].nil?
+          puts CreateApplication.error_msg("error.model_error")
+        else
+        Generator.generating_model_controller ARGV
+        end
+      end
+      if type.eql? ("controller")
+        if ARGV[2].nil?
+          puts CreateApplication.error_msg("error.controller_error")
+        else
+          Generator.generating_model_controller ARGV
+        end
+      end
+    else
+      puts CreateApplication.error_msg("error.model_control_error")
+    end
+  end
+
+  def self.start_server
+    constant = ["s","server"]
+    if constant.include?(ARGV[1])
+      begin
+        system "rackup config.ru"
+      rescue
+        puts "\nPlease run this command from root directory of your Application to start server!\n"
+      end
+    else
+      puts "Server missing"
     end
   end
 
 end
-CreateApplication.display_error
+
 CreateApplication.identify_commandline_arguement
