@@ -25,8 +25,8 @@ class WebitModel
       client, klass = self.get_connection
       table_name = self.get_table_name
       add_column_query = klass.send("add_column",@relation)
-     # query = add_column_query.join("")
-      client.query(query)
+     query = add_column_query.join("")
+      #client.query(query)
       add_foreign_key = klass.send("add_foreign_key",@relation)
       s = add_foreign_key
       client.query(s)
@@ -151,4 +151,11 @@ class WebitModel
     puts save_query
     client.query(save_query)
   end
+  #def update *args
+  #  client, klass = WeboModel.get_connection
+  #  table_name = WeboModel.get_table_name
+  #end
+
 end
+
+

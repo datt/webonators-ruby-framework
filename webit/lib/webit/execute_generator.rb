@@ -123,7 +123,7 @@ module ExecuteGenerator
     arguement_counter = 0
     validate_flag = 0
     arguement_datatype = []
-    data_type = ["integer","float","boolean","string"]
+    data_type = ["integer","float","boolean","string","text"]
     argv.each do |arguement|
       if arguement_counter >= 3
         arguement_datatype = arguement.split(':')

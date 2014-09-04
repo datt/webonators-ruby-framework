@@ -8,7 +8,7 @@ class Mysql2Adapter
   def self.datatype_mapping parameter
     datatype_map = {
                     "string"  => "varchar(255)",
-                    "text"    => "varchar(1000)",
+                    "text"    => "varchar(512)",
                     "integer"     => "int",
                     "float"   => "float",
                     "date"    => "date"
@@ -82,7 +82,12 @@ class Mysql2Adapter
         element
       end
     end
+    puts parameter_arr
+    puts values
     values = parameter_arr.join(",")
+    # parameter.keys.each do |key|
+    #   fields.push(key.to_s)
+    # end
     fields = parameter.keys.join(",")
     query = "INSERT INTO #{table_name} (#{fields}) VALUES (#{values}) "
 
