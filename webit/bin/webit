@@ -12,14 +12,15 @@ module CreateApplication
   end
 
   def self.identify_commandline_arguement
-    if ARGV[0].eql? "new"
-      CreateApplication.create_app
-    elsif ARGV[0] == "generate" || ARGV[0] == "g"
-      CreateApplication.create_model_controller
-    elsif ARGV[0] == "start" && (ARGV[1] == "server" || ARGV[1] == 's')
-      CreateApplication.start_server
-    else
-      puts "Webit Version v-0.0.1"
+    case ARGV[0]
+      when "new"
+        CreateApplication.create_app
+      when "g" || "generate"
+        CreateApplication.create_model_controller
+      when "start"
+        CreateApplication.start_server
+      else
+       puts "Webit Version v-0.0.1"
     end
   end
 
@@ -63,10 +64,15 @@ module CreateApplication
   end
 
   def self.start_server
-    begin
-      system "rackup config.ru"
-    rescue
-      puts "\nPlease run this command from root directory of your Application to start server!\n"
+    constant = ["s","server"]
+    if constant.include?(ARGV[1])
+      begin
+        system "rackup config.ru"
+      rescue
+        puts "\nPlease run this command from root directory of your Application to start server!\n"
+      end
+    else
+      puts "Server missing"
     end
   end
 
