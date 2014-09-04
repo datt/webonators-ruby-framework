@@ -85,6 +85,9 @@ class Mysql2Adapter
     puts parameter_arr
     puts values
     values = parameter_arr.join(",")
+    # parameter.keys.each do |key|
+    #   fields.push(key.to_s)
+    # end
     fields = parameter.keys.join(",")
     query = "INSERT INTO #{table_name} (#{fields}) VALUES (#{values}) "
 
