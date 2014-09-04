@@ -1,5 +1,3 @@
-require 'erubis'
-
 class Dispatcher
 
   def self.parse_routes path_info
