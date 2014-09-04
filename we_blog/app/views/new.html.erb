@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>New</title>
+    <link rel="stylesheet" type="text/css" href=" http://getbootstrap.com/2.3.2/assets/css/bootstrap.css">
+    <link rel="icon" href="https://avatars2.githubusercontent.com/u/332874?v=2&s=200">
+
+    <style>
+
+    .nav li a{
+      font-size : 24px;
+      color : #2A649;
+    }
+
+    .nav{
+      margin-top : 10px;
+    }
+
+    .footer{
+      margin-top: 60px;
+    }
+
+    .footer ul li a{
+      font-size : 14px;
+      color : #000000;
+    }
+
+    .copyright{
+      text-align : center;
+      font-size : 14px;
+      display : block;
+    }
+
+    .content ul li {
+      bottom-margin : 10px;
+    }
+
+    .postList{
+      margin-top: 40px;
+      font-size: 28px;
+    }
+
+    .postList li{
+      list-style: none;
+    }
+
+    .postList a{
+      text-decoration: none;
+    }
+
+    .textbox {
+        border: 1px dotted #000000;
+        outline:0;
+        height:300px;
+        width: 275px;
+        display: block;
+    }
+
+    .postButton{
+      margin-top: 10px;
+    }
+
+    .footer{
+      border-top : solid 1px #000000;
+    }
+
+    .content{
+      margin-top: 60px;
+    }
+
+    .heading{
+      font-size: 24px;
+      color : 234167;
+      margin-top: 40px;
+      line-height: 38px;
+    }
+
+    .btn{
+      margin-top: 30px;
+      margin-right: 40px;
+      padding: 10px 60px;
+    }
+
+    .titleBox{
+      width: 275px;
+    }
+
+    </style>
+
+    <script>
+      function validateForm(){
+        var post_title = document.forms["post_form"]["title"].value.trim();
+        var post_content = document.forms["post_form"]["content"].value.trim();
+        post_length = post_title.length;
+        content_length = post_content.length;
+        if ((post_title == null || post_title == "")  && (post_content == null || post_content == "")){
+          alert("Title and content of post is missing..!");
+          document.getElementByName("title").value("");
+          document.getElementByName("content").value("");
+          return false;
+        }
+        else if (( post_title != null || post_title != "") && (post_content == null || post_content == "")){
+          alert("Content of post is missing..!");
+          document.getElementByName("title").value("");
+          return false;
+        }
+        else if (( post_content != null || post_content != "") && (post_title == null || post_title == "")){
+          alert("Title of post is missing..!");
+          document.getElementByName("content").value("");
+          return false;
+        }
+        if (post_length > 255){
+          alert("You have exceed the word limit..!(max. 255)");
+          return false;
+        }
+        if (content_length > 1000){
+          alert("You have exceed the word limit..!(max. 1000)");
+          return false;
+        }
+      }
+    </script>
+  </head>
+
+  <body>
+    <div class="container header">
+      <ul class="nav nav-pills">
+        <li class="active">
+          <a href="/">Home</a>
+        </li>
+        <li>
+          <a href="/about">About Us</a>
+        </li>
+        <li>
+          <a href="/contact">Contact Us</a>
+        </li>
+        <div class="clearFix"></div>
+      </ul>
+    </div>
+
+    <div class="container content">
+      <form name = "post_form" action = "#" onsubmit = "return validateForm()" method = "post" >
+        <input type="text" name="title" placeholder = "Title your Post"/></br>
+        <h3 class="heading">Word your mind!</h3>
+        <textarea class="textbox" type= "text" name="content" placeholder = "Mind Here"></textarea>
+        <input class= "postButton" type ="submit" value="POST">
+      </form>
+    </div>
+
+    <div class="container footer">
+      <ul class="nav nav-pills">
+        <li class = "active">
+          <a href="/">Home</a>
+        </li>
+        <li>
+          <a href="/about">About Us</a>
+        </li>
+        <li>
+          <a href="/contact">Contact Us</a>
+        </li>
+      </ul>
+      <span class="copyright">&copy All rights reserved Weblog 2014</span>
+    </div>
+  </body>
+</html>

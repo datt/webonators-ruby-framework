@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<head>
+<title>Index</title>
+<link rel="stylesheet" type="text/css" href=" http://getbootstrap.com/2.3.2/assets/css/bootstrap.css">
+<link rel="icon" href="https://avatars2.githubusercontent.com/u/332874?v=2&s=200">
+<style>
+.nav li a{
+  font-size : 24px;
+  color : #2A649;
+}
+
+.nav{
+  margin-top : 10px;
+}
+
+.header{
+  height : 30px;
+}
+
+.logo
+{
+  font-family: lucida;
+}
+
+.footer ul li a{
+  font-size : 14px;
+  color : #000000;
+}
+
+.copyright{
+  text-align : center;
+  font-size : 14px;
+  display : block;
+}
+
+.footer{
+  border-top : solid 1px #000000;
+}
+
+.heading
+{
+  font-size: 52px;
+  color : 234167;
+  text-align: center;
+  margin-top: 160px;
+  line-height: 38px;
+}
+
+.messageHome
+{
+  font-size: 22px;
+  color: 236865;
+  text-align: center;
+  margin-top: 40px;
+}
+
+.btn
+{
+  margin-top: 80px;
+  margin-right: 40px;
+  margin-left: 120px;
+  padding: 40px 40px
+}
+
+.homeButton
+{
+  font-size: 24px;
+}
+
+.aboutButton
+{
+  font-size: 24px;
+  margin-left: 280px;
+}
+.search_container{
+
+}
+.footer
+{
+  margin-top: 160px;
+}
+
+.messageAbout
+{
+  font-size: 32px;
+  color: 236865;
+  text-align: center;
+  margin-top: 40px;
+  line-height: 34px;
+}
+</style>
+</head>
+  <body>
+    <div class="container header">
+        <ul class="nav nav-pills">
+          <li class="active">
+            <a href="/">Home</a>
+          </li>
+          <li>
+            <a href="/about">About Us</a>
+          </li>
+          <li>
+            <a href="/contact">Contact Us</a>
+          </li>
+        </ul>
+    </div>
+
+
+    <div class = "container">
+      <div class="content">
+        <div class = "search_container">
+        <input class ="search_box" type="text" name="search_box" placeholder ="Search Post" style="height : 19px"></input>
+           <input type="submit" name="search_button" value="Search" class="search_button"></input>
+         </div>
+        <ul class = "postList">
+          <% @posts.each do |post| %>
+           <li>
+            <a href ="/post/<%=post["id"]%>"> <%= post["title"] %> </a>
+            <a href = "/post/<%=post["id"]%>/destroy" class="delete_link"> Delete </a>
+           </li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container footer">
+      <ul class="nav nav-pills">
+        <li class = "active">
+          <a href="/">Home</a>
+        </li>
+        <li>
+          <a href="/about">About Us</a>
+        </li>
+        <li>
+          <a href="/contact">Contact Us</a>
+        </li>
+      </ul>
+      <span class="copyright">&copy All rights reserved Weblog 2014</span>
+    </div>
+  </body>
+</html>
