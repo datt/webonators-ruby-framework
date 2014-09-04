@@ -36,7 +36,7 @@ class Mysql2Adapter
     end
   end
 
-  def self.add_column realtion
+  def self.add_column relation
     query_relation_arr = []
     relation.each do |key,value|
       query = "alter table #{value}
@@ -46,14 +46,14 @@ class Mysql2Adapter
     query_relation_arr
   end
 
-  def self.add_foreign_key realtion
+  def self.add_foreign_key relation
     relation.each do |key,value|
     query = "alter table #{value}
             add FOREIGN KEY (#{key}_id)
             REFERENCES #{key}(id)
              ON DELETE CASCADE"
+    return query
     end
-    query
   end
 
   def self.show(table_name,id)
@@ -64,7 +64,7 @@ class Mysql2Adapter
     resultset = "SELECT * FROM #{related_table} WHERE #{table_name}_id = #{id} "
   end
   def self.all table_name
-    select_all_query = "SELECT * FROM #{table_name}"
+    select_all_query = "SELECT * FROM #{table_name} ORDER BY id DESC"
   end
 
   def self.destroy(table_name,id)
@@ -72,21 +72,23 @@ class Mysql2Adapter
 
   end
 
-  def self.save table_name,parameter,values
+  def self.save(table_name,parameter)
     fields = []
-    p values
-    value_arr = values.collect do |element|
+    values =[]
+    parameter_arr = parameter.values.collect do |element|
       if element.is_a?(String)
-        "'element'"
+        "'#{element}'"
       else
         element
       end
     end
-    values = value_arr.join(",")
-    parameter.keys.each do |key|
-      fields.push(key.to_s)
-    end
-    fields = fields.join(",")
+    puts parameter_arr
+    puts values
+    values = parameter_arr.join(",")
+    # parameter.keys.each do |key|
+    #   fields.push(key.to_s)
+    # end
+    fields = parameter.keys.join(",")
     query = "INSERT INTO #{table_name} (#{fields}) VALUES (#{values}) "
 
   end
