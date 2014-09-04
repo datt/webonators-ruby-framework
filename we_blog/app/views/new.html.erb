@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<head>
+<title>Show</title>
+<link rel="stylesheet" type="text/css" href=" http://getbootstrap.com/2.3.2/assets/css/bootstrap.css">
+<link rel="icon" href="https://avatars2.githubusercontent.com/u/332874?v=2&s=200">
+<style>
+   .nav li a{
+  font-size : 24px;
+  color : #2A649;
+}
+
+.nav{
+  margin-top : 10px;
+}
+
+.footer
+{
+  margin-top: 100px;
+}
+
+.footer ul li a{
+  font-size : 14px;
+  color : #000000;
+}
+
+.copyright{
+  text-align : center;
+  font-size : 14px;
+  display : block;
+}
+
+.content ul li {
+  bottom-margin : 10px;
+}
+.postList
+{
+  margin-top: 40px;
+  font-size: 28px;
+}
+
+.postList li
+{
+  list-style: none;
+}
+
+.postList a
+{
+  text-decoration: none;
+}
+
+ .textbox {
+    border: 1px dotted #000000;
+    outline:0;
+    height:300px;
+    width: 275px;
+    display: block;
+  }
+
+.postButton
+{
+  margin-top: 10px;
+}
+
+.footer{
+  border-top : solid 1px #000000;
+}
+
+.content
+{
+  margin-top: 60px;
+}
+
+.heading
+{
+  font-size: 24px;
+  color : 234167;
+  margin-top: 40px;
+  line-height: 38px;
+}
+
+.btn
+{
+  margin-top: 30px;
+  margin-right: 40px;
+  padding: 10px 60px;
+}
+
+.titleBox
+{
+  width: 275px;
+}
+
+</style>
+</head>
+  <body>
+    <div class="container header">
+        <ul class="nav nav-pills">
+          <li >
+            <a href="/">Home</a>
+          </li>
+          <li>
+            <a href="/about">About Us</a>
+          </li>
+          <li>
+            <a href="/contact">Contact Us</a>
+          </li>
+
+        <div class="clearFix"></div>
+        </ul>
+    </div>
+    <div class="container content">
+      <form method="post" action="/post/create">
+        <input name="title" type="text" class = "titleBox" placeholder = "Title your Post"/></br>
+        <h3 class="heading">Word your mind!</h3>
+        <textarea name="content" class="textbox" type= "text" placeholder = "Start minding here.."></textarea>
+        <input class= "btn btn-large btn-primary" type ="submit" value="Share">
+      </form>
+    </div>
+    <div class="footer">
+      <div class="container">
+    <ul class="nav nav-pills">
+          <li>
+            <a href="/">Home</a>
+          </li>
+          <li>
+            <a href="/about">About Us</a>
+          </li>
+          <li>
+            <a href="/contact">Contact Us</a>
+          </li>
+        </ul>
+        <span class="copyright">&copy WeBlog All Rights Reserved 2014</span>
+    </div>
+  </div>
+  </body>
+</html>
