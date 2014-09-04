@@ -16,7 +16,7 @@ module GenerateConfiguration
     module_name = module_name.join
     config_file_string = "#!/usr/bin/env ruby
 require ::File.expand_path(\"../config/application.rb\", __FILE__)
-Rack::Server.start app: #{module_name}::Application, Port: 3000"
+Rack::Handler::WEBrick.run( #{module_name}::Application, :Port => 3000)"
     write_config.write config_file_string
     write_config.close
   end
@@ -25,7 +25,8 @@ Rack::Server.start app: #{module_name}::Application, Port: 3000"
     write_config = File.new("#{app_name}/config/application.rb","w+")
     module_name = app_name.split("_").each {|word| word.capitalize!}
     module_name = module_name.join
-    application_file_string = "require ::File.expand_path('../routes.rb', __FILE__)
+    application_file_string = "require 'webit'
+require ::File.expand_path('../routes.rb', __FILE__)
 Dir[\"app/controllers/*.rb\"].each {|file| require_relative \"../\"+file}
 Dir[\"app/models/*.rb\"].each {|file| require_relative \"../\"+file}
 module #{module_name}

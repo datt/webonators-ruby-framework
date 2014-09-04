@@ -48,13 +48,17 @@ module CreateApplication
             Generator.generating_model_controller ARGV
           end
         end
-
       else
         puts CreateApplication.error_msg("error.model_control_error")
       end
 
     elsif ARGV[0] == "start" && (ARGV[1] == "server" || ARGV[1] == 's')
-      require_relative "../config.ru"
+      begin
+        system "rackup config.ru"
+      rescue
+        puts "\nPlease run this command from root directory of your Application to start server!\n"
+      end
+
     else
       puts "Welcome to your Application"
     end
