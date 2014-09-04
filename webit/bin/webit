@@ -1,5 +1,4 @@
 #!/usr/bin/ruby
-#require "fileutils"
 require 'yaml'
 require ::File.expand_path("../../lib/generators/generator_model_controller.rb", __FILE__)
 require ::File.expand_path("../../lib/generators/generate_app_directory.rb", __FILE__)
@@ -13,56 +12,64 @@ module CreateApplication
   end
 
   def self.identify_commandline_arguement
-    constant = ["model","controller"]
     if ARGV[0].eql? "new"
-      if ARGV[1].eql? "app"
-        if ARGV[2].nil?
-          puts "Application Name is missing\n USAGE - webit new app APP_NAME\n"
-        else
-          GenerateAppDirectory.generate ARGV[2]
-        end
-      else
-        puts "Application Name not specified\n USAGE - webit new app APP_NAME\n"
-      end
-
+      CreateApplication.create_app
     elsif ARGV[0] == "generate" || ARGV[0] == "g"
-      if ARGV[1].nil?
-        puts CreateApplication.error_msg("error.model_control_error")
-      end
-      type = ARGV[1].downcase
-
-      if constant.include?(type)
-
-        if type.eql? ("model")
-          if ARGV[2].nil?
-            puts CreateApplication.error_msg("error.model_error")
-          else
-            Generator.generating_model_controller ARGV
-          end
-        end
-
-        if type.eql? ("controller")
-          if ARGV[2].nil?
-            puts CreateApplication.error_msg("error.controller_error")
-          else
-            Generator.generating_model_controller ARGV
-          end
-        end
-      else
-        puts CreateApplication.error_msg("error.model_control_error")
-      end
-
+      CreateApplication.create_model_controller
     elsif ARGV[0] == "start" && (ARGV[1] == "server" || ARGV[1] == 's')
-      begin
-        system "rackup config.ru"
-      rescue
-        puts "\nPlease run this command from root directory of your Application to start server!\n"
-      end
-      
+      CreateApplication.start_server
     else
-      puts "Welcome to your Application"
+      puts "Webit Version v-0.0.1"
     end
   end
+
+  def self.create_app
+    if ARGV[1].eql? "app"
+      if ARGV[2].nil?
+        puts "Application Name is missing\n USAGE - webit new app APP_NAME\n"
+      else
+        GenerateAppDirectory.generate ARGV[2]
+      end
+    else
+      puts "Application Name not specified\n USAGE - webit new app APP_NAME\n"
+    end
+  end
+
+  def self.create_model_controller
+    constant = ["model","controller"]
+    if ARGV[1].nil?
+      puts CreateApplication.error_msg("error.model_control_error")
+    else
+      type = ARGV[1].downcase
+    end
+    if constant.include?(type)
+      if type.eql? ("model")
+        if ARGV[2].nil?
+          puts CreateApplication.error_msg("error.model_error")
+        else
+        Generator.generating_model_controller ARGV
+        end
+      end
+      if type.eql? ("controller")
+        if ARGV[2].nil?
+          puts CreateApplication.error_msg("error.controller_error")
+        else
+          Generator.generating_model_controller ARGV
+        end
+      end
+    else
+      puts CreateApplication.error_msg("error.model_control_error")
+    end
+  end
+
+  def self.start_server
+    begin
+      system "rackup config.ru"
+    rescue
+      puts "\nPlease run this command from root directory of your Application to start server!\n"
+    end
+  end
+
 end
 
 CreateApplication.identify_commandline_arguement
