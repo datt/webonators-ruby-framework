@@ -26,6 +26,7 @@ Rack::Handler::WEBrick.run( #{module_name}::Application, :Port => 3000)"
     module_name = app_name.split("_").each {|word| word.capitalize!}
     module_name = module_name.join
     application_file_string = "require 'webit'
+ROOT = File.dirname( File.expand_path('../', __FILE__ ) )
 require ::File.expand_path('../routes.rb', __FILE__)
 Dir[\"app/controllers/*.rb\"].each {|file| require_relative \"../\"+file}
 Dir[\"app/models/*.rb\"].each {|file| require_relative \"../\"+file}
