@@ -1,20 +1,21 @@
 class PostsController < WebitController
-
+  
   def initialize
-    @path = File.expand_path("../../.", __FILE__)
+    @path = ROOT
   end
+  
   def index
     @posts =Post.all
-    render 'index', @path
+    render 'index'
   end
 
   def new
-    render 'new',@path
+    render 'new'
   end
 
   def show id
     @post= Post.show id
-    render 'show',@path
+    render 'show'
   end
 
   def create params

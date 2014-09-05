@@ -5,15 +5,15 @@ class StaticPagesController < WebitController
   end
 
   def home
-    render 'home', @path
+    render 'home'
   end
 
   def about
-    render 'about', @path
+    render 'about'
   end
 
   def contact
-    render 'contact', @path
+    render 'contact'
   end
 
 end

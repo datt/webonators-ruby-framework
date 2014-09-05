@@ -1,6 +1,7 @@
 <!DOCTYPE html>
+<html>
 <head>
-<title>Show</title>
+<title>New Post</title>
 <link rel="stylesheet" type="text/css" href=" http://getbootstrap.com/2.3.2/assets/css/bootstrap.css">
 <link rel="icon" href="https://avatars2.githubusercontent.com/u/332874?v=2&s=200">
 <style>
@@ -91,6 +92,38 @@
 }
 
 </style>
+<script>
+      function validateForm(){
+        var post_title = document.forms["post_form"]["title"].value.trim();
+        var post_content = document.forms["post_form"]["content"].value.trim();
+        post_length = post_title.length;
+        content_length = post_content.length;
+        if ((post_title == null || post_title == "")  && (post_content == null || post_content == "")){
+          alert("Title and content of post is missing..!");
+          document.getElementByName("title").value("");
+          document.getElementByName("content").value("");
+          return false;
+        }
+        else if (( post_title != null || post_title != "") && (post_content == null || post_content == "")){
+          alert("Content of post is missing..!");
+          document.getElementByName("title").value("");
+          return false;
+        }
+        else if (( post_content != null || post_content != "") && (post_title == null || post_title == "")){
+          alert("Title of post is missing..!");
+          document.getElementByName("content").value("");
+          return false;
+        }
+        if (post_length > 255){
+          alert("You have exceed the word limit..!(max. 255)");
+          return false;
+        }
+        if (content_length > 1000){
+          alert("You have exceed the word limit..!(max. 1000)");
+          return false;
+        }
+      }
+    </script>
 </head>
   <body>
     <div class="container header">
@@ -109,7 +142,7 @@
         </ul>
     </div>
     <div class="container content">
-      <form method="post" action="/post/create">
+      <form method="post" name = "post_form" action="/post/create"  onsubmit = "return validateForm()">
         <input name="title" type="text" class = "titleBox" placeholder = "Title your Post"/></br>
         <h3 class="heading">Word your mind!</h3>
         <textarea name="content" class="textbox" type= "text" placeholder = "Start minding here.."></textarea>

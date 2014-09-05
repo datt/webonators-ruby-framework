@@ -1,5 +1,18 @@
 class Routes < WebitRoutes
 
+
+  get '/' do
+    goto 'StaticPagesController', 'home'
+  end
+
+  get '/about' do
+    goto 'StaticPagesController', 'about'
+  end
+
+  get '/contact' do
+    goto 'StaticPagesController', 'contact'
+  end
+
   get '/posts' do
     goto 'PostsController', 'index'
   end
@@ -20,15 +33,4 @@ class Routes < WebitRoutes
     goto 'PostsController', 'destroy'
   end
 
-  get '/' do
-    goto 'StaticPagesController', 'home'
-  end
-
-  get '/about' do
-    goto 'StaticPagesController', 'about'
-  end
-
-  get '/contact' do
-    goto 'StaticPagesController', 'contact'
-  end
 end
