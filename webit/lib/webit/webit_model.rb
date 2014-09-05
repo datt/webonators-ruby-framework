@@ -111,16 +111,6 @@ class WebitModel
     resultset = client.query(find_by_query)
     client.close
     resultset.entries
-    # @@model_parameters.keys.each do |action|
-    #   define_method("find_by_#{action}") do |argument|
-    #     client, klass = self.class.get_connection
-    #     table_name = self.class.get_table_name
-    #     find_by_query = klass.send("find_by", table_name,action,argument)
-    #     resultset = client.query(find_by_query)
-    #     client.close
-    #     resultset.entries
-    #   end
-    # end
   end
 
   def self.get_table_name
@@ -187,18 +177,10 @@ class WebitModel
   def self.save args
     client, klass = self.get_connection
     table_name = self.get_table_name
-    # @@model_parameters.keys.each do |key|
-    #   value_arr.push(self.instance_variable_get("@#{key}"))
-    # end
     save_query = klass.send("save", table_name,args)
     puts save_query
     client.query(save_query)
   end
-  #def update *args
-  #  client, klass = WeboModel.get_connection
-  #  table_name = WeboModel.get_table_name
-  #end
-
 end
 
 
