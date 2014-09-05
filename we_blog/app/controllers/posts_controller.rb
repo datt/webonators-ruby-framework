@@ -1,7 +1,6 @@
 class PostsController < WebitController
 
   def initialize
-    def initialize
     @path = ROOT
   end
 
