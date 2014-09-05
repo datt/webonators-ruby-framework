@@ -28,6 +28,15 @@ class Routes < WebitRoutes
     goto 'PostsController', 'destroy'
   end
 
+  get '/post/:id/edit' do
+   goto 'PostsController', 'edit'
+  end
+
+  get '/post/:id/update' do
+   goto 'PostsController', 'update'
+  end
+
+
   get '/' do
     goto 'StaticPagesController', 'home'
   end

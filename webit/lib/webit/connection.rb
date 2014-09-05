@@ -39,9 +39,5 @@ class Connection
     @connection
   end
 
-  def destroy_connection
-    puts "some"
-    @connection.close
-  end
 
 end

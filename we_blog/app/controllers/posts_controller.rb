@@ -39,6 +39,20 @@ class PostsController < WebitController
     redirect_to "/post/#{@id}"
   end
 
+  def edit id
+    @id = id
+    @post = Post.show @id
+    render 'edit'
+  end
+
+  def update id, params
+    @param = params
+    @id = id
+    @param["id"] = @id
+    Post.update @param
+    redirect_to "/post/#{@id}"
+  end
+
   def search_comment params
     @param = params
     @posts = []

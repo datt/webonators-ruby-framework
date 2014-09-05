@@ -54,11 +54,7 @@
 
 .postList li
 {
-  display :block;
-  width :240px;
   list-style: none;
-  padding-bottom: 5px;
-  border-bottom :1px solid #efefef;
 }
 
 .postList a
@@ -91,15 +87,12 @@
 
 .showTitle
 {
-  float: left;
-  width:270px;
   margin-top: 50px;
   border: 2px solid #efefef;
 }
 
 .showPost
 {
-  float: left;
   margin-left: 150px;
 }
 
@@ -138,6 +131,7 @@ textarea
 {
   resize:none;
 }
+
 
 </style>
  <script>
@@ -200,28 +194,23 @@ textarea
     </div>
     </div>
 
-    <div class="container">
-    <div class = "showTitle">
-      <h3 class="postTitle"> Post List </h3>
-      <ul class = "postList">
-        <% @posts.each do |post| %>
-        <li>
-          <a class = "titlePrint" href ="/post/<%=post["id"]%>"> <%= post["title"] %> </a>
-        </li>
+    <div class = "container row">
+    <div class = "showPost offset6">
+    <% @post.each do |post| %>
+    <form method="post" name = "post_form" id="post_form_id" action="/post/<%=@id%>/update"  onsubmit = "return validateForm();">
+        <h3 class="heading">Change Your Title</h3>
+        <input name="title" type="text" class = "titleBox" placeholder = "<%=post['title']%>"/></br>
+        <h3 class="heading">Change Your Mind Here!</h3>
+        <textarea name="content" class="textbox" type= "text" placeholder = "<%=post['content']%>"></textarea>
+        <input class= "btn btn-medium btn-primary span3" type ="submit" value="UPDATE"/>
+      </form>
       <%end%>
-      </ul>
-    </div>
-
-    <div class = "showPost">
-    <form method="post" name = "post_form" id="post_form_id" action="/post/create"  onsubmit = "return validateForm();">
-        <h3 class="heading">Title</h3>
-        <input name="title" type="text" class = "titleBox" placeholder = "Title your Post"/></br>
-        <h3 class="heading">Word your mind!</h3>
-        <textarea name="content" class="textbox" type= "text" placeholder = "Start minding here.."></textarea>
-        <input class= "btn btn-large btn-primary span3" type ="submit" value="SHARE"/>
+      <form action = "/posts">
+      <input class= "btn btn-medium btn-primary span3" type="submit" value="CANCEL"/>
       </form>
     </div>
     </div>
+  </div>
 
     <div class="footer">
     <div class="container">

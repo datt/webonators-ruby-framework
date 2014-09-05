@@ -144,7 +144,9 @@ a{
             <a href ="/post/<%=post["id"]%>"> <%= post["title"] %> : </a>
             <span class = "contentPost" /post/<%=post["id"]%>> <%= post["content"] %> </span>
             <a href = "/post/<%=post["id"]%>" class="links"><i class="icon-comment"></i> Comment </a>
+              <a href = "/post/<%=post["id"]%>/edit" class="links"><i class="icon-edit"></i> Edit </a>
             <a href = "/post/<%=post["id"]%>/destroy" class="links" onclick = "return promptConfirm();"><i class="icon-trash"></i>Delete </a>
+
            </li>
           <% end %>
         </ul>
