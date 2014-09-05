@@ -15,18 +15,32 @@ class WebitModel
     end
   end
 
-   def self.has_many (attribute)
+  def self.belongs_to (attribute)
+    @relation = {}
+    @relation["#{self.get_table_name}"] = "#{attribute}"
+    puts @relation
+    self.attr_access("#{@relation.values.join(" ")}_id")
+    attribute
+  end
+
+  def self.has_many (attribute)
     @relation = {}
     @relation["#{self.get_table_name}"] = "#{attribute}"
     if @relation.empty?
       puts "no reltion present"
     else
-      puts @relation
       client, klass = self.get_connection
       table_name = self.get_table_name
-      add_column_query = klass.send("add_column",@relation)
-     query = add_column_query.join("")
-      #client.query(query)
+      select_all_query = klass.send("all", attribute)
+      result = client.query(select_all_query)
+      puts "#{table_name}_id"
+      if result.fields.include?("#{table_name}_id")
+
+      else
+        add_column_query = klass.send("add_column",@relation)
+        query = add_column_query.join(" ")
+        client.query(query)
+      end
       add_foreign_key = klass.send("add_foreign_key",@relation)
       s = add_foreign_key
       client.query(s)
@@ -79,6 +93,25 @@ class WebitModel
     end
   end
 
+  def self.search args
+    referred_table = @relation.values.join(" ")
+    client, klass = self.get_connection
+    table_name = self.get_table_name
+    select_query = klass.send("search",table_name, referred_table,args)
+    puts select_query
+    result = client.query(select_query)
+    client.close
+    result
+  end
+
+  def self.find_by args
+    client, klass = self.get_connection
+    table_name = self.get_table_name
+    find_by_query = klass.send("find_by", table_name,args)
+    resultset = client.query(find_by_query)
+    client.close
+    resultset.entries
+  end
 
   def self.get_table_name
     puts self.name
@@ -151,10 +184,6 @@ class WebitModel
     puts save_query
     client.query(save_query)
   end
-  #def update *args
-  #  client, klass = WeboModel.get_connection
-  #  table_name = WeboModel.get_table_name
-  #end
 
 end
 

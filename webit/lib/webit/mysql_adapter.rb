@@ -1,4 +1,4 @@
-#!/usr/bin/ruby
+    #!/usr/bin/ruby
 require "mysql2"
 #require_relative "establish_connection.rb"
 
@@ -91,6 +91,15 @@ class Mysql2Adapter
     fields = parameter.keys.join(",")
     query = "INSERT INTO #{table_name} (#{fields}) VALUES (#{values}) "
 
+  end
+
+  def self.find_by(table_name,parameter)
+    query = "SELECT * from #{table_name} where #{parameter.keys.join} = '#{parameter.values.join()}' "
+  end
+
+  def self.search(table_name,referred_table,args)
+    query = "select * from #{table_name} where #{referred_table}_id in
+            (select id from #{referred_table} where #{args.keys.join} = '#{args.values.join}');"
   end
 
   def update_query

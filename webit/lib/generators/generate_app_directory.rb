@@ -9,7 +9,6 @@ class GenerateAppDirectory
       ["#{app_name}","app", "controllers"],
       ["#{app_name}","app", "models"],
       ["#{app_name}","app", "views"],
-      ["#{app_name}","log"],
       ["#{app_name}","config"]
     ]
     if File.exists?("#{app_name}")
@@ -36,14 +35,8 @@ class GenerateAppDirectory
     file.close
   end
 
-  def self.generate_default_files(app_name)
-    File.new("#{app_name}/log/error.log","w")
-    File.new("#{app_name}/log/application.log","w")
-  end
-
   def self.generate app_name
     GenerateAppDirectory.make_directory app_name
-    GenerateAppDirectory.generate_default_files app_name
     GenerateAppDirectory.generate_routes_file app_name
     GenerateConfiguration.create_database_file
     GenerateConfiguration.create_config_file app_name
