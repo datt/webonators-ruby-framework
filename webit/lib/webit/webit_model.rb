@@ -177,14 +177,10 @@ class WebitModel
   def self.save args
     client, klass = self.get_connection
     table_name = self.get_table_name
-    # @@model_parameters.keys.each do |key|
-    #   value_arr.push(self.instance_variable_get("@#{key}"))
-    # end
     save_query = klass.send("save", table_name,args)
     puts save_query
     client.query(save_query)
   end
-
 end
 
 
