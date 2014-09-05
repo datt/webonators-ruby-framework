@@ -91,7 +91,11 @@ class Mysql2Adapter
   end
 
   def self.find_by(table_name,parameter)
-    query = "SELECT * from #{table_name} where #{parameter.keys.join} = '#{parameter.values.join()}' "
+    if parameter.values.join.is_a? Fixnum
+      query = "SELECT * from #{table_name} where #{parameter.keys.join} = #{parameter.values.join} "
+    else
+      query = "SELECT * from #{table_name} where #{parameter.keys.join} = '#{parameter.values.join()}' "
+    end
   end
 
   def self.search(table_name,referred_table,args)
