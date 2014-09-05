@@ -18,7 +18,6 @@ class WebitModel
   def self.belongs_to (attribute)
     @relation = {}
     @relation["#{self.get_table_name}"] = "#{attribute}"
-    puts @relation
     self.attr_access("#{@relation.values.join(" ")}_id")
     attribute
   end
@@ -33,9 +32,7 @@ class WebitModel
       table_name = self.get_table_name
       select_all_query = klass.send("all", attribute)
       result = client.query(select_all_query)
-      puts "#{table_name}_id"
       if result.fields.include?("#{table_name}_id")
-
       else
         add_column_query = klass.send("add_column",@relation)
         query = add_column_query.join(" ")
@@ -58,8 +55,6 @@ class WebitModel
     count = self.class.count_records
     instance_variable_set("@id",count+1)
     hash.each do |key, value|
-      puts @@model_parameters.keys
-
       if @@model_parameters.has_key?(key.to_sym)
           instance_variable_set("@"+key,value)
       else
@@ -87,9 +82,8 @@ class WebitModel
       table_name = self.class.get_table_name
       client, klass = self.class.get_connection
       find_query = klass.send("fetch", table_name,table, id)
-      puts find_query
       result = client.query(find_query)
-      puts result.entries
+      result.entries
     end
   end
 
@@ -98,7 +92,6 @@ class WebitModel
     client, klass = self.get_connection
     table_name = self.get_table_name
     select_query = klass.send("search",table_name, referred_table,args)
-    puts select_query
     result = client.query(select_query)
     client.close
     result
@@ -114,7 +107,6 @@ class WebitModel
   end
 
   def self.get_table_name
-    puts self.name
     table_name =self.name.downcase
     str_len = table_name.length
     table_name = table_name.insert(str_len, "s")
@@ -140,7 +132,6 @@ class WebitModel
     client, klass = model_class.get_connection
     model_parameters = Hash[column_name.zip data_type]
     create_table_object = klass.send("create_table", table_name,model_parameters)
-    puts create_table_object
     client.query(create_table_object)
     client.close
   end
@@ -149,11 +140,9 @@ class WebitModel
     client, klass = self.get_connection
     table_name = self.get_table_name
     select_all_query = klass.send("all", table_name)
-    puts select_all_query
     result = client.query(select_all_query)
     client.close
     @count = result.count
-    puts @count
     result.entries
   end
 
@@ -178,9 +167,9 @@ class WebitModel
     client, klass = self.get_connection
     table_name = self.get_table_name
     save_query = klass.send("save", table_name,args)
-    puts save_query
     client.query(save_query)
   end
+
 end
 
 
