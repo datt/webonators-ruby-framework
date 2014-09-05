@@ -5,7 +5,6 @@ class PostsController < WebitController
     @path = ROOT
   end
 
-  end
   def index
     @posts =Post.all
     render 'index'
@@ -43,16 +42,11 @@ class PostsController < WebitController
 
   def search_comment params
     @param = params
-    puts @param
     @posts = []
-    #@posts = Post.find_by @param
     Post.all.each do |post|
       if post["title"].downcase.include? @param["title"].downcase
         @posts.push(post)
       end
-    end
-    if @posts.length.equal? 0
-      @error = "No matching results found. Try Again"
     end
     render 'index'
   end
