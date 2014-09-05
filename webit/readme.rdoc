@@ -5,6 +5,9 @@ Commands that are used :
 3. Command to generate controller : webit new controller controller_name actions
 
 Example :-
+
 $ webit new app sample
-/sample$ webit new model person string:name integer:age
-/sample$ webit new controller account open close
+
+/sample $ webit new model person string:name integer:age
+
+/sample $ webit new controller account open close
