@@ -1,7 +1,6 @@
 require "erubis"
 class WebitController
 
-  #def render action, path
   def render action
     if self.class.instance_methods.include? :"#{action}"
       template = Erubis::Eruby.new File.read("#{@path}/views/#{action}.html.erb")
