@@ -103,34 +103,14 @@ class Mysql2Adapter
             (select id from #{referred_table} where #{args.keys.join} = '#{args.values.join}');"
   end
 
-  def update_query
-    value_arr = []
-    get_parameter
-    column_name = get_columnname
-    column_name.each do |element|
-      puts "enter updated value"
-      value = gets.chomp
-      value_arr.push(value)
-    end
-    query_arr = []
-    column_name.each_index do |i|
-       query ="#{column_name[i]} = #{value_arr[i]}"
-       query_arr.push(query)
-    end
-    query = query_arr.join(",")
-    query
-  end
 
-  def update
-    get_parameter
-    table_name = get_table_name
-    connection = get_connection
-    raw_query = update_query
-    puts "enter which id you want to update"
-    id = Integer(gets.chomp)
-    query = "UPDATE #{table_name} SET #{raw_query}
-                        WHERE id = #{id}"
-    connection.query(query)
+  def self.update(table_name,update_info)
+    puts update_info
+    update_info
+    update_column = "#{update_info.keys[0]} ='#{update_info.values[0]}',
+                    #{update_info.keys[1]}= '#{update_info.values[1]}'"
+    query = "UPDATE #{table_name} SET #{update_column}
+                        WHERE id = #{update_info.values.last}"
   end
 
   def self.fetch_count(table_name)

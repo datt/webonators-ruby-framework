@@ -39,11 +39,24 @@ class PostsController < WebitController
     redirect_to "/post/#{@id}"
   end
 
+  def edit id
+    @id = id
+    @post = Post.show @id
+    render 'edit'
+  end
+
+  def update id, params
+    @param = params
+    @id = id
+    @param["id"] = @id
+    Post.update @param
+    redirect_to "/post/#{@id}"
+  end
+
   def search_comment params
     @param = params
     puts @param
     @posts = []
-    #@posts = Post.find_by @param
     Post.all.each do |post|
       if post["title"].downcase.include? @param["title"].downcase
         @posts.push(post)

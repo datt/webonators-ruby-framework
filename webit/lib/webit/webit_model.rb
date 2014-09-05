@@ -170,6 +170,14 @@ class WebitModel
     client.query(save_query)
   end
 
+  def self.update args
+    client, klass = self.get_connection
+    table_name = self.get_table_name
+    update_query = klass.send("update", table_name,args)
+    puts update_query
+    client.query(update_query)
+  end
+
 end
 
 
