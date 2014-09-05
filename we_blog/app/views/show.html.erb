@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<head>
+<title>Show</title>
+<link rel="stylesheet" type="text/css" href=" http://getbootstrap.com/2.3.2/assets/css/bootstrap.css">
+<link rel="icon" href="https://avatars2.githubusercontent.com/u/332874?v=2&s=200">
+<style>
+body
+{
+  background: #e1e1e1;
+}
+
+.nav li a{
+  font-size : 20px;
+  color : #222;
+}
+
+.nav{
+  margin-top : 10px;
+}
+
+.copyright{
+  text-align : center;
+  font-size : 15px;
+  color: #222;
+  display : block;
+  margin-top: 20px;
+}
+
+.header{
+  border-bottom : solid 2px #efefef;
+}
+
+.footer{
+  border-top : solid 2px #efefef;
+  margin-top: 60px;
+}
+
+.footer ul li a{
+  font-size : 14px;
+  color : #000000;
+}
+
+.copyright{
+  text-align : center;
+  font-size : 14px;
+  display : block;
+}
+
+.clearFix{
+  float : none;
+  clear : both;
+}
+
+.content ul li {
+  bottom-margin : 10px;
+}
+.postList
+{
+  margin-top: 40px;
+
+}
+
+.postList li
+{
+  list-style: none;
+}
+
+.postList a
+{
+  text-decoration: none;
+}
+
+ .textbox {
+    border: 1px dotted #000000;
+    outline:0;
+    height:200px;
+    width: 475px;
+    display: block;
+  }
+
+.postButton
+{
+  margin-top: 10px;
+  padding: 10px 10px;
+}
+.footer{
+  border-top : solid 2px #efefef;
+  margin-top: 60px;
+}
+
+.content
+{
+  margin-top: 60px;
+}
+
+.heading
+{
+  font-size: 52px;
+  color : 234167;
+  text-align: center;
+  margin-top: 160px;
+  line-height: 38px;
+}
+
+.homeButton
+{
+  font-size: 24px;
+}
+
+.aboutButton
+{
+  font-size: 24px;
+  margin-left: 280px;
+}
+
+.postContent
+{
+  font-size: 16px;
+  display: block;
+  line-height: 20px;
+  padding-top: 30px;
+}
+
+.postTitle
+{
+  font-size: 24px;
+  line-height: 28px;
+  font-weight: bold;
+
+}
+.commentBox
+{
+  margin-top : 20px;
+
+}
+
+textarea
+{
+  resize : none;
+  width: 400px;
+  height: 50px;
+}
+
+.commentList li
+{
+  list-style: none;
+  font-size: 20px;
+  margin-top: 10px;
+  display: inline-block;
+
+}
+
+.commentList li span
+{
+  border-bottom : 2px solid #efefef;
+  padding-bottom: 6px;
+  display: block;
+  width:450px;
+}
+.searchButton{
+  margin-top: 1px;
+  border-radius: 30px;
+}
+.postButton{
+  font-size: 20px;
+  font-weight: bold;
+  padding: 15px 15px;
+}
+</style>
+<script>
+  function validateForm(){
+    validate_flag = true;
+    var comment = document.forms["comment_form"]["comment"].value.trim();
+    comment_length = comment.length;
+    if(comment == null || comment == ""){
+      alert("Comment field is missing.!");
+      validate_flag = false;
+      return false;
+    }
+    if(comment_length > 255){
+      alert("You have exceed the word limit of comment.(max. 255)");
+      validate_flag = false;
+      return false;
+    }
+    if(validate_flag == true){
+      return true;
+    }
+  }
+</script>
+
+</head>
+  <body>
+    <div class="header">
+      <div class="container">
+        <ul class="nav nav-pills">
+          <li>
+            <a class = "logo" href="/">WeBlog</a>
+          </li>
+          <li class>
+            <a href="/about">About Us</a>
+          </li>
+          <li>
+            <a href="/contact">Contact Us</a>
+          </li>
+        </ul>
+    </div>
+  </div>
+
+    <div class = "container">
+      <div class="content">
+      <div class="row">
+         <a class="btn btn-primary postButton span3 pull-right" type="button" href="/post/new">Post what you think</a>
+         <div class="span8">
+        <ul class = "postList">
+          <% @post.each do |post| %>
+            <li>
+              <a href="/post/<%=post["id"]%>" class = "postTitle"> <%= post["title"] %> </a>
+              <br>
+              <span class = "postcontent"  "/post/<%=post["id"]%>"> <%= post["content"] %> </span>
+            </li>
+              <div class = "commentBox">
+                <form method="post" name ="comment_form" action="/post/<%=post["id"]%>/create_comment" onsubmit = "return validateForm();">
+                  <textarea name = "comment" type ="text" placeholder = "Comment here"></textarea></br>
+                  <input class = "btn btn-primary btn-medium searchButton"  type= "submit" value="comment"></input>
+                </form>
+              </div>
+            <% end %>
+        </ul>
+
+          <ul class = "commentList">
+            <% @comment.each do |comment| %>
+            <li>
+              <span><%= comment["comment"] %> </span>
+            </li>
+            <% end %>
+          </ul>
+          </div>
+      </div>
+    </div>
+    </div>
+    <div class="footer">
+    <div class="container">
+        <span class="copyright">&copy All rights reserved Weblog 2014</span>
+    </div>
+  </div>
+  </body>
+</html>
