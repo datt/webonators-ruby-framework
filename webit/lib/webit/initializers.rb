@@ -6,7 +6,7 @@ module Constants
   "database" => "test",
   "hostname" => "localhost",
   "username" => "root",
-  "password" => ""
+  "password" => "kartik"
   }
 }
 
