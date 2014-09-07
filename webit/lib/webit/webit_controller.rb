@@ -1,8 +1,6 @@
 require "erubis"
 class WebitController
 
-  protected
-
   def render action
     template = Erubis::Eruby.new File.read("#{@path}/app/views/#{action}.html.erb")
     content = template.result(binding)
