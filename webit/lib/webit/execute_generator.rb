@@ -161,16 +161,17 @@ module ExecuteGenerator
   def self.method_name argv
     create_model_flag = 0
     file_name = "empty"
+    p argv
     if argv[0].eql?("generate") || argv[0].eql?("g")
-      unless argv[2].eql?("")
-        if argv[2].nil?
-          puts "Model Name is not defined"
-        else
-          file_name = argv[2].downcase
-        end
-        create_file = File.new("app/models/#{file_name}.rb","w")
-        create_file.close
+      if argv[2].nil?
+        puts "Model Name is not defined"
+      elsif argv[2].eql?"model" || "Model"
+        abort "Sorry..Keywork Model cant be used in place of model_name"
+      else
+        file_name = argv[2].downcase
       end
+      create_file = File.new("app/models/#{file_name}.rb","w")
+      create_file.close
       return file_name
     end
     if create_model_flag.eql? 0
