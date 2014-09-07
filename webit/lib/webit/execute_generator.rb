@@ -3,8 +3,8 @@ require ::File.expand_path("../webit_controller.rb", __FILE__)
 require 'fileutils'
 module ExecuteGenerator
 
-  VALID = 1
-  INVALID = 0
+  VALID = true
+  INVALID = false
 
   def self.get_generator_parameter argv
     if argv[1] == "model" || argv[1] == "Model"
@@ -120,24 +120,23 @@ module ExecuteGenerator
   end
 
   def self.validate argv
-    arguement_counter = 0
-    validate_flag = 0
+    validate_flag = false
     arguement_datatype = []
+
     data_type = ["integer","float","boolean","string","text"]
-    argv.each do |arguement|
-      if arguement_counter >= 3
+    argv.each_with_index do |arguement,index|
+      if index >= 3
         arguement_datatype = arguement.split(':')
         if data_type.include?(arguement_datatype[0])
-          validate_flag = 1
+          validate_flag = true
         else
-          validate_flag = 0
+          validate_flag = true
           return validate_flag
         end
       end
       if argv.length == 3
-        validate_flag = 1
+        validate_flag = true
       end
-      arguement_counter += 1
     end
     validate_flag
   end
