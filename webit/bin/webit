@@ -12,7 +12,8 @@ module CreateApplication
   end
 
   def self.identify_commandline_arguement
-    case ARGV[0]
+    action = ARGV[0]
+    case action
       when "new"
         CreateApplication.create_app
       when "g" || "generate"
@@ -25,11 +26,13 @@ module CreateApplication
   end
 
   def self.create_app
-    if ARGV[1].eql? "app"
-      if ARGV[2].nil?
+    check_app = ARGV[1]
+    app_name = ARGV[2]
+    if check_app.eql? "app"
+      if app_name.nil?
         puts "Application Name is missing\n USAGE - webit new app APP_NAME\n"
       else
-        GenerateAppDirectory.generate ARGV[2]
+        GenerateAppDirectory.generate app_name
       end
     else
       puts "Application Name not specified\n USAGE - webit new app APP_NAME\n"
@@ -38,21 +41,23 @@ module CreateApplication
 
   def self.create_model_controller
     constant = ["model","controller"]
-    if ARGV[1].nil?
+    action = ARGV[1]
+    action_name = ARGV[2]
+    if action.nil?
       puts CreateApplication.error_msg("error.model_control_error")
     else
-      type = ARGV[1].downcase
+      type = action.downcase
     end
     if constant.include?(type)
       if type.eql? ("model")
-        if ARGV[2].nil?
+        if action_name.nil?
           puts CreateApplication.error_msg("error.model_error")
         else
         Generator.generating_model_controller ARGV
         end
       end
       if type.eql? ("controller")
-        if ARGV[2].nil?
+        if action_name.nil?
           puts CreateApplication.error_msg("error.controller_error")
         else
           Generator.generating_model_controller ARGV
@@ -65,7 +70,8 @@ module CreateApplication
 
   def self.start_server
     constant = ["s","server"]
-    if constant.include?(ARGV[1])
+    action = ARGV[1]
+    if constant.include?(action)
       begin
         system "rackup config.ru"
       rescue
