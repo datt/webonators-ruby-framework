@@ -1,4 +1,3 @@
-#!/usr/bin/ruby
 require 'fileutils'
 require ::File.expand_path("../../webit/generate_configuration.rb", __FILE__)
 # Create directory structure when user creates new project in framework
