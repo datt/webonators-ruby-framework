@@ -36,8 +36,6 @@ class Connection
         ##----connection string for connecting to sqlite3
         ##---------------------------------------------##
     end
-    @connection
+   return  @connection,adapter
   end
-
-
 end

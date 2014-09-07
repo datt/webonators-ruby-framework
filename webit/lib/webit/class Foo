@@ -1,0 +1,10 @@
+class Foo
+  def self.bar
+    baz
+  end
+
+  private
+  def self.baz
+    puts "baz called"
+  end
+end

@@ -1,30 +1,11 @@
-    #!/usr/bin/ruby
-require "mysql2"
-#require_relative "establish_connection.rb"
-
 class Mysql2Adapter
-
-
-  def self.datatype_mapping parameter
-    datatype_map = {
-                    "string"  => "varchar(255)",
-                    "text"    => "varchar(512)",
-                    "integer"     => "int",
-                    "float"   => "float",
-                    "date"    => "date"
-                  }
-    parameter.each do |key,value|
-      parameter[key] = datatype_map[value]
-    end
-    parameter
-  end
 
   def self.create_table(table_name,table_parameter)
      if table_parameter.empty?
       create_table_query = "CREATE TABLE IF NOT EXISTS #{table_name}
                     (id INT PRIMARY KEY AUTO_INCREMENT NOT NULL )"
     else
-      table_parameter = datatype_mapping table_parameter
+      table_parameter = datatype_mapping(table_parameter)
       query_arr = []
       table_parameter.each do |field_name ,data_type|
         query = "#{field_name}"+" "+ "#{data_type}"
@@ -38,22 +19,17 @@ class Mysql2Adapter
 
   def self.add_column relation
     query_relation_arr = []
-    relation.each do |key,value|
-      query = "alter table #{value}
-            add #{key}_id int"
+      query = "alter table #{realtion.values.join}
+            add #{realtion.keys.join}_id int"
       query_relation_arr.push(query)
-    end
     query_relation_arr
   end
 
   def self.add_foreign_key relation
-    relation.each do |key,value|
-    query = "alter table #{value}
-            add FOREIGN KEY (#{key}_id)
-            REFERENCES #{key}(id)
+    query = "alter table #{relation.values.join}
+            add FOREIGN KEY (#{relation.keys.join}_id)
+            REFERENCES #{relation.keys.join}(id)
              ON DELETE CASCADE"
-    return query
-    end
   end
 
   def self.show(table_name,id)
@@ -63,18 +39,16 @@ class Mysql2Adapter
   def self.fetch table_name, related_table,id
     resultset = "SELECT * FROM #{related_table} WHERE #{table_name}_id = #{id} "
   end
+
   def self.all table_name
     select_all_query = "SELECT * FROM #{table_name} ORDER BY id DESC"
   end
 
   def self.destroy(table_name,id)
     query = "DELETE FROM #{table_name} WHERE id = #{id}"
-
   end
 
   def self.save(table_name,parameter)
-    fields = []
-    values =[]
     parameter_arr = parameter.values.collect do |element|
       if element.is_a?(String)
         "'#{element}'"
@@ -82,12 +56,8 @@ class Mysql2Adapter
         element
       end
     end
-    puts parameter_arr
-    puts values
-    values = parameter_arr.join(",")
-    fields = parameter.keys.join(",")
-    query = "INSERT INTO #{table_name} (#{fields}) VALUES (#{values}) "
-
+    query = "INSERT INTO #{table_name} (#{parameter.keys.join(",")})
+                                VALUES (#{parameter_arr.join(",")}) "
   end
 
   def self.find_by(table_name,parameter)
@@ -98,22 +68,33 @@ class Mysql2Adapter
     end
   end
 
-  def self.search(table_name,referred_table,args)
-    query = "select * from #{table_name} where #{referred_table}_id in
-            (select id from #{referred_table} where #{args.keys.join} = '#{args.values.join}');"
-  end
-
-
   def self.update(table_name,update_info)
-    puts update_info
-    update_info
-    update_column = "#{update_info.keys[0]} ='#{update_info.values[0]}',
-                    #{update_info.keys[1]}= '#{update_info.values[1]}'"
-    query = "UPDATE #{table_name} SET #{update_column}
+    update_arr =[]
+    update_info.each do |key,value|
+      unless key == "id"
+        update_arr << "#{key} = '#{value}'"
+      end
+    end
+    query = "UPDATE #{table_name} SET #{update_arr.join(",")}
                         WHERE id = #{update_info.values.last}"
-  end
+   end
 
-  def self.fetch_count(table_name)
+  def self.fetch_last_row_count(table_name)
     query = "SELECT * FROM #{table_name} ORDER BY id DESC LIMIT 1"
   end
+
+  private
+  def datatype_mapping parameter
+      datatype_map = {
+                      "string"  => "varchar(255)",
+                      "text"    => "varchar(512)",
+                      "integer"     => "int",
+                      "float"   => "float",
+                      "date"    => "date"
+                    }
+      parameter.each do |key,value|
+        parameter[key] = datatype_map[value]
+      end
+      parameter
+    end
 end
