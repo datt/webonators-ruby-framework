@@ -9,6 +9,16 @@ body
 {
   background: #e1e1e1;
 }
+a
+{
+  text-decoration: none;
+}
+textarea
+{
+  resize:none;
+  width: 400px;
+  height: 50px;
+}
 
 .nav li a{
   font-size : 20px;
@@ -117,9 +127,117 @@ body
   width: 275px;
 }
 
-textarea
+.content ul li {
+  bottom-margin : 10px;
+}
+.postList
 {
-  resize:none;
+  margin-top: 40px;
+
+}
+
+.postList li
+{
+  list-style: none;
+}
+
+.postButton
+{
+  margin-top: 10px;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 15px 15px;
+}
+
+.postContent
+{
+  font-size: 16px;
+  display: block;
+  line-height: 20px;
+  padding-top: 30px;
+}
+
+.postTitle
+{
+  font-size: 24px;
+  line-height: 28px;
+  font-weight: bold;
+
+}
+.commentBox
+{
+  margin-top : 20px;
+
+}
+
+.commentList li
+{
+  list-style: none;
+  font-size: 20px;
+  margin-top: 10px;
+  display: inline-block;
+
+}
+
+.commentList li span
+{
+  border-bottom : 2px solid #efefef;
+  padding-bottom: 6px;
+  display: block;
+  width:450px;
+}
+
+.searchButton{
+  margin-top: 1px;
+  border-radius: 30px;
+}
+
+.links
+{
+  font-size: 14px;
+  color: #0088cc;
+  margin-right: 20px;
+}
+
+.postHeading
+{
+  font-size: 36px;
+  margin-top: 60px;
+  margin-bottom: 6px;
+}
+
+.postList li
+{
+  list-style: none;
+  margin: 18px 0 0px 0;
+  border-bottom: 1px solid #efefef;
+  padding-bottom: 10px;
+}
+
+.contentPost
+{
+  line-height: 20px;
+  font-size: 16px;
+  display: block;
+  width: 900px;
+
+}
+.showTitle
+{
+  float: left;
+  width:270px;
+  margin-top: 50px;
+  border: 2px solid #efefef;
+}
+
+.titleBox
+{
+  width: 275px;
+}
+
+.titlePrint
+{
+  font-size: 12px;
 }
 </style>
 <script>
@@ -163,6 +281,32 @@ textarea
       return true;
     }
   }
+
+  function validateShow(){
+    validate_flag = true;
+    var comment = document.forms["comment_form"]["comment"].value.trim();
+    comment_length = comment.length;
+    if(comment == null || comment == ""){
+      alert("Comment field is missing.!");
+      validate_flag = false;
+      return false;
+    }
+    if(comment_length > 255){
+      alert("You have exceed the word limit of comment.(max. 255)");
+      validate_flag = false;
+      return false;
+    }
+    if(validate_flag == true){
+      return true;
+    }
+  }
+  function promptConfirm(){
+    var result = confirm("Are you sure?");
+    if(result == false)
+      return false;
+    else
+      return true;
+  }
 </script>
 </head>
   <body>
@@ -181,9 +325,13 @@ textarea
         </ul>
     </div>
   </div>
+  <div class="content">
+    <div class="container">
 
-  <%= yield %>
-
+      <%= yield %>
+      
+    </div>
+  </div>
   <div class="footer">
     <div class="container">
         <span class="copyright">&copy All rights reserved Weblog 2014</span>

@@ -1,161 +1,22 @@
-<!DOCTYPE html>
-<head>
-<title>Index</title>
-<link rel="stylesheet" type="text/css" href=" http://getbootstrap.com/2.3.2/assets/css/bootstrap.css">
-<link rel="icon" href="https://avatars2.githubusercontent.com/u/332874?v=2&s=200">
-<style>
-body
-{
-  background: #e1e1e1;
-}
-a{
-  text-decoration: none;
-}
-.nav li a{
-  font-size : 20px;
-  color : #222;
-}
-
-.nav{
-  margin-top : 10px;
-}
-
-.header
-{
-  border-bottom : solid 2px #efefef;
-}
-
-.copyright{
-  text-align : center;
-  font-size : 15px;
-  color:#222;
-  display : block;
-  margin-top: 20px;
-}
-
-.btn
-{
-  padding: 10px 10px;
-}
-.content{
-  margin-top: 60px;
-}
-.footer
-{
-  margin-top: 60px;
-}
-
-.postList
-{
-  font-size: 24px;
-  margin-top: 40px;
-}
-
-.postHeading
-{
-  font-size: 36px;
-  margin-top: 60px;
-  margin-bottom: 6px;
-  color: #0088cc;
-}
-
-.postList li
-{
-  list-style: none;
-  margin: 18px 0 0px 0;
-  border-bottom: 1px solid #efefef;
-  padding-bottom: 10px;
-}
-
-.links
-{
-  font-size: 14px;
-  color: #0088cc;
-  margin-right: 20px;
-}
-
-.contentPost
-{
-  line-height: 20px;
-  font-size: 16px;
-  display: block;
-  width: 900px;
-
-}
-
-.postButton{
-  font-size: 20px;
-  font-weight: bold;
-  padding: 15px 15px;
-}
-.search_button{
-  float: right;
-  margin-top: 1px;
-  border-radius: 30px;
-}
-
-.footer{
-  border-top: solid 2px #efefef;
-  margin-top: 60px;
-}
-</style>
-<script>
-  function promptConfirm(){
-    var result = confirm("Are you sure?");
-    if(result == false)
-      return false;
-    else
-      return true;
-}
-</script>
-</head>
-  <body>
-    <div class="header">
-      <div class="container">
-        <ul class="nav nav-pills">
-          <li class="active">
-            <a href="/" class = "logo">WeBlog</a>
-          </li>
-          <li>
-            <a href="/about">About Us</a>
-          </li>
-          <li>
-            <a href="/contact">Contact Us</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-
-      <div class="content">
-        <div class = "container">
-        <div class="row">
-         <a class="btn btn-primary postButton span3 pull-left" type="button" href="/post/new">Post what you think</a>
-        <div class = "search_container span4 pull-right">
-         <form method="post" action="/post/result">
-        <input name= "title" class ="search_box" type="text" name="search_box" placeholder ="Search Post by Title" style="height : 19px"></input>
-           <input type="submit" value = "Search" class="search_button btn-medium btn-primary"/>
-           <div class="clear-fix"></div>
-        </form>
-         </div>
-       </div>
-         <h3 class = "postHeading"> What People Say !! </h3>
-        <ul class = "postList">
-          <% @posts.each do |post| %>
-           <li>
-            <a href ="/post/<%=post["id"]%>"> <%= post["title"] %></a>
-            <span class = "contentPost" /post/<%=post["id"]%>> <%= post["content"] %> </span>
-            <a href = "/post/<%=post["id"]%>" class="links"><i class="icon-comment"></i> Comment </a>
-              <a href = "/post/<%=post["id"]%>/edit" class="links"><i class="icon-edit"></i> Edit </a>
-            <a href = "/post/<%=post["id"]%>/destroy" class="links" onclick = "return promptConfirm();"><i class="icon-trash"></i>Delete </a>
-           </li>
-          <% end %>
-        </ul>
-      </div>
-    </div>
-    <div class="footer">
-    <div class="container">
-        <span class="copyright">&copy All rights reserved Weblog 2014</span>
-    </div>
+<div class="row">
+  <a class="btn btn-primary postButton span3 pull-left" type="button" href="/post/new">Post what you think</a>
+  <div class = "search_container span4 pull-right">
+    <form method="post" action="/post/result">
+      <input name= "title" class ="search_box" type="text" name="search_box" placeholder ="Search Post" style="height : 19px"></input>
+      <input type="submit" value = "Search" class="search_button btn-medium btn-primary"/>
+      <div class="clear-fix"></div>
+    </form>
   </div>
-  </body>
-</html>
+</div>
+<h3 class = "postHeading"> What People Say !! </h3>
+<ul class = "postList">
+  <% @posts.each do |post| %>
+    <li>
+      <a href ="/post/<%=post["id"]%>"> <%= post["title"] %> : </a>
+      <span class = "contentPost" /post/<%=post["id"]%>> <%= post["content"] %> </span>
+      <a href = "/post/<%=post["id"]%>" class="links"><i class="icon-comment"></i> Comment </a>
+      <a href = "/post/<%=post["id"]%>/edit" class="links"><i class="icon-edit"></i> Edit </a>
+      <a href = "/post/<%=post["id"]%>/destroy" class="links" onclick = "return promptConfirm();"><i class="icon-trash"></i>Delete </a>
+    </li>
+  <% end %>
+</ul>
