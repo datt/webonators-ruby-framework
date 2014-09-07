@@ -7,8 +7,8 @@ class Request
   def self.call(env)
     request = Rack::Request.new(env)
     path = request.path_info
-    params = request.post?
-    if params
+    params = nil
+    if request.post?
       params = request.params
     end
     content = Dispatcher.dispatch *[path, params].compact
