@@ -1,110 +1,14 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>Home</title>
-<link rel="stylesheet" type="text/css" href=" http://getbootstrap.com/2.3.2/assets/css/bootstrap.css">
-<link rel="icon" href="https://avatars2.githubusercontent.com/u/332874?v=2&s=200">
-<style>
-body
-{
-  background: #e1e1e1;
-}
-
-.nav li a{
-  font-size : 20px;
-  color : #222;
-}
-
-.nav{
-  margin-top : 10px;
-}
-
-.header
-{
-  border-bottom : solid 2px #efefef;
-}
-
-.copyright{
-  text-align : center;
-  color: #222;
-  font-size : 14px;
-  display : block;
-  margin-top: 20px;
-}
-
-.footer{
-  border-top : solid 2px #efefef;
-  margin-top: 80px;
-}
-
-.heading
-{
-  font-size: 48px;
-  color : #0088cc;
-  text-align: center;
-  line-height: 38px;
-}
-.head{
-  margin-top: 80px;
-}
-
-.messageHome
-{
-  font-size: 22px;
-  text-align: center;
-  margin-top: 30px;
-  color: #222;
-}
-
-.btn
-{
-  padding: 15px 15px;
-  font-weight: bold;
-}
-
-.homeButton
-{
-  font-size: 20px;
-}
-
-.btn-div{
-  margin-top: 20px;
-}
-
-</style>
-</head>
-  <body>
-    <div class="header">
-      <div class="container">
-        <ul class="nav nav-pills">
-          <li class = "active">
-            <a class = "logo" href="/">WeBlog</a>
-          </li>
-          <li >
-            <a href="/about">About Us</a>
-          </li>
-          <li>
-            <a href="/contact">Contact Us</a>
-          </li>
-        </ul>
-    </div>
-  </div>
-    <div class="container content">
-      <div class="row head">
+<div class="content">
+  <div class="container">
+    <div class="row">
       <div class = "span12">
-      <h1 class = "heading">Welcome to WeBlog Application ! </h1>
-      <p class = "messageHome">Connect With Your Friends.. Post !  Comment ! And Stay Coupled </p>
+        <h1 class = "heading">Welcome to WeBlog Application ! </h1>
+        <p class = "messageHome">Connect With Your Friends.. Post !  Comment ! And Stay Coupled </p>
+      </div>
+    </div>
+    <div class="row btn-div">
+        <a class="btn btn-large btn-primary homeButton span3 offset2" type="button" href="/post/new">CREATE POST</a>
+        <a class="btn btn-large btn-primary homeButton span3 offset1" type="button" href="/posts">DISPLAY POSTS</a>
     </div>
   </div>
-  <div class="row btn-div">
-      <a class="btn btn-large btn-primary homeButton span3 offset2" type="button" href="/post/new">CREATE POST</a>
-      <a class="btn btn-large btn-primary homeButton span3 offset1" type="button" href="/posts">DISPLAY POSTS</a>
-  </div>
-  </div>
-    <div class="footer">
-    <div class="container">
-        <span class="copyright">&copy All rights reserved Weblog 2014</span>
-    </div>
-  </div>
-  </body>
-</html>
+</div>
