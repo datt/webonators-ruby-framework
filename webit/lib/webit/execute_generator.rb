@@ -3,13 +3,14 @@ require ::File.expand_path("../webit_controller.rb", __FILE__)
 require 'fileutils'
 module ExecuteGenerator
 
+  class Base
   VALID = true
   INVALID = false
 
   def self.get_generator_parameter argv
-    if argv[1] == "model" || argv[1] == "Model"
+    if argv[1].eql?"model" || "Model"
       call_for_model_operations argv
-    elsif argv[1] == "controller" || argv[1] == "Controller"
+    elsif argv[1].eql?"controller" || "Controller"
       call_for_controller_operations argv
     end
   end
@@ -34,7 +35,7 @@ module ExecuteGenerator
         set_column data_type,column_name,model_class_name,argv
         WebitModel.create_table argv[2],data_type,column_name
       elsif validate_flag.eql? INVALID
-        puts "Wrong Syntax..Command to generate model => webit generate model "
+        puts "Wrong Syntax..Command to generate model => webit g model mode_name data_type:column_name"
       end
     end
   end
@@ -122,10 +123,10 @@ module ExecuteGenerator
   def self.validate argv
     validate_flag = false
     arguement_datatype = []
-
+    min_arguement_length = 3
     data_type = ["integer","float","boolean","string","text"]
     argv.each_with_index do |arguement,index|
-      if index >= 3
+      if index >= min_arguement_length
         arguement_datatype = arguement.split(':')
         if data_type.include?(arguement_datatype[0])
           validate_flag = true
@@ -134,7 +135,7 @@ module ExecuteGenerator
           return validate_flag
         end
       end
-      if argv.length == 3
+      if argv.length == min_arguement_length
         validate_flag = true
       end
     end
@@ -162,7 +163,7 @@ module ExecuteGenerator
     create_model_flag = 0
     file_name = "empty"
     p argv
-    if argv[0].eql?("generate") || argv[0].eql?("g")
+    if argv[0].eql?"generate" || "g"
       if argv[2].nil?
         puts "Model Name is not defined"
       elsif argv[2].eql?"model" || "Model"
@@ -177,5 +178,6 @@ module ExecuteGenerator
     if create_model_flag.eql? 0
       return file_name
     end
+  end
   end
 end
