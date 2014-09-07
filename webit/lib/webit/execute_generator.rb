@@ -7,9 +7,9 @@ module ExecuteGenerator
   INVALID = false
 
   def self.get_generator_parameter argv
-    if argv[1] == "model" || argv[1] == "Model"
+    if argv[1].eql? "model"
       call_for_model_operations argv
-    elsif argv[1] == "controller" || argv[1] == "Controller"
+    elsif argv[1].eql? "controller"
       call_for_controller_operations argv
     end
   end
@@ -23,6 +23,7 @@ module ExecuteGenerator
       if model_name[model_name.length-1].eql?'s'
         model_name[model_name.length-1] = ''
       end
+      ExecuteGenerator.create_model_class model_name 
       model_name = model_name.downcase
       model_class_name = model_name.capitalize
       validate_flag = validate argv
@@ -46,27 +47,35 @@ module ExecuteGenerator
       puts "Controller Name is not defined"
     else
       if controller_name[controller_name.length-1]!='s'
-        controller_name="#{controller_name}s"
+        controller_name ="#{controller_name}s"
       end
+      ExecuteGenerator.create_controller_class controller_name 
+      if argv.length > 3
+        argv.each_with_index do |action, index|
+          if index > 2
+            action = action.downcase
+            actions << action
+            write_def_controller controller_name,action
+            create_view_file action
+            write_action_routes controller_name,action
+            write_to_view controller_name,action
+          end
+        end
+      end
+    end
+    ExecuteGenerator.endfile_condition controller_name
+  end
+
+  def self.create_controller_class controller_name
     controller_name = controller_name.downcase
     controller_class_name = controller_name.split('_').each {|word| word.capitalize!}
     controller_class_name = controller_class_name.join.concat("Controller")
     write_controller = File.new("app/controllers/#{controller_name}_controller.rb","w")
     write_controller.write "class #{controller_class_name} < WebitController\n"
     write_controller.close
-    if argv.length > 3
-      argv.each_with_index do |action, index|
-        if index > 2
-          action = action.downcase
-          actions << action
-          write_def_controller controller_name,action
-          create_view_file action
-          write_action_routes controller_name,action
-          write_to_view controller_name,action
-        end
-      end
-    end
-   end
+  end
+
+  def self.endfile_condition controller_name
     write_controller = File.open("app/controllers/#{controller_name}_controller.rb","a")
     write_controller.write "\nend"
     write_controller.close
