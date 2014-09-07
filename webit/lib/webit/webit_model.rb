@@ -1,9 +1,18 @@
- require "mysql2"
+#require "mysql2"
 require ::File.expand_path("../connection.rb", __FILE__)
 require ::File.expand_path("../mysql_adapter.rb", __FILE__)
 class WebitModel
   @@model_parameters = {}
 
+  def initialize(hash={})
+    count = self.class.fetch_last_row
+    instance_variable_set("@id",count+1)
+    hash.each do |key, value|
+      if @@model_parameters.has_key?(key.to_sym)
+        instance_variable_set("@"+key,value)
+      end
+    end
+  end
   def self.attr_access(*attribute)
     @@model_parameters[attribute[0]] = attribute[1]
     field_name = @@model_parameters.keys
@@ -16,57 +25,36 @@ class WebitModel
   end
 
   def self.belongs_to (attribute)
-    @relation = {}
-    @relation["#{self.get_table_name}"] = "#{attribute}"
-    self.attr_access("#{@relation.values.join(" ")}_id")
-    attribute
+    relation = {}
+    relation["#{self.get_table_name}"] = "#{attribute}"
+    self.attr_access("#{relation.values.join(" ")}_id")
   end
 
   def self.has_many (attribute)
-    @relation = {}
-    @relation["#{self.get_table_name}"] = "#{attribute}"
-    if @relation.empty?
-      puts "no reltion present"
-    else
-      client, klass = self.get_connection
+    relation = {}
+    relation["#{self.get_table_name}"] = "#{attribute}"
+    unless relation.empty?
+      client, klass = get_connection
       table_name = self.get_table_name
       select_all_query = klass.send("all", attribute)
       result = client.query(select_all_query)
-      if result.fields.include?("#{table_name}_id")
-      else
-        add_column_query = klass.send("add_column",@relation)
+      unless result.fields.include?("#{table_name}_id")
+        add_column_query = klass.send("add_column",relation)
         query = add_column_query.join(" ")
         client.query(query)
       end
-      add_foreign_key = klass.send("add_foreign_key",@relation)
+      add_foreign_key = klass.send("add_foreign_key",relation)
       s = add_foreign_key
       client.query(s)
     end
-    self.attr_access(@relation.values.join(" "))
-    self.referring_table(@relation)
+    self.attr_access(relation.values.join(" "))
+    self.referring_table(relation)
   end
 
-  def get_related_table_name
-    @related_table = self.class.has_many
-    @related_table
-  end
-
-  def initialize(hash={})
-    count = self.class.count_records
-    instance_variable_set("@id",count+1)
-    hash.each do |key, value|
-      if @@model_parameters.has_key?(key.to_sym)
-          instance_variable_set("@"+key,value)
-      else
-        puts "#{key} is not in field name"
-      end
-    end
-  end
-
-  def self.count_records
+  def self.fetch_last_row
     client, klass = self.get_connection
     table_name = self.get_table_name
-    fetch_count= klass.send("fetch_count", table_name)
+    fetch_count= klass.send("fetch_last_row_count", table_name)
     result = client.query(fetch_count)
     if result.count == 0
       return 0
@@ -75,7 +63,7 @@ class WebitModel
     end
   end
 
-   def self.referring_table(relation)
+  def self.referring_table(relation)
     table = relation.values.join(" ")
     define_method("#{table}") do |arg = nil|
       id = self.instance_variable_get("@id")
@@ -85,16 +73,6 @@ class WebitModel
       result = client.query(find_query)
       result.entries
     end
-  end
-
-  def self.search args
-    referred_table = @relation.values.join(" ")
-    client, klass = self.get_connection
-    table_name = self.get_table_name
-    select_query = klass.send("search",table_name, referred_table,args)
-    result = client.query(select_query)
-    client.close
-    result
   end
 
   def self.find_by args
@@ -113,15 +91,13 @@ class WebitModel
     table_name
   end
 
-
+  protected
   def self.get_connection
     connection = Connection.new
-    client = connection.establish_connection
-    class_name = client.class.name.split("::")[0]
-    class_name = "#{class_name}Adapter"
+    client,adapter = connection.establish_connection
+    class_name = "#{adapter.capitalize}Adapter"
     klass = Object.const_get class_name
     return client, klass
-
   end
 
   def self.create_table model_class_name,data_type,column_name
@@ -174,7 +150,6 @@ class WebitModel
     client, klass = self.get_connection
     table_name = self.get_table_name
     update_query = klass.send("update", table_name,args)
-    puts update_query
     client.query(update_query)
   end
 
