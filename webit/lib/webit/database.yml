@@ -10,7 +10,7 @@ development:
   database: test
   hostname: localhost
   username: root
-  password: ''
+  password: 'webonise6186'
 # You can add another yaml document below with a header and
 # then list of keys and values
 
