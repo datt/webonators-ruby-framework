@@ -7,39 +7,55 @@ class Controller
     actions = []
     controller_name = argv[2]
     if argv[2].nil?
-      puts "Controller Name is not defined"
+      puts error_msg("error.controller_error.perror")
+    elsif argv[2].downcase.eql? "controller"
+      puts error_msg("error.controller_error.same")
     else
       if controller_name[controller_name.length-1]!='s'
         controller_name="#{controller_name}s"
       end
-    controller_name = controller_name.downcase
-    controller_class_name = controller_name.split('_').each {|word| word.capitalize!}
-    controller_class_name = controller_class_name.join.concat("Controller")
-    write_controller = File.new("app/controllers/#{controller_name}_controller.rb","w")
-    write_controller.write "class #{controller_class_name} < WebitController\n"
-    write_controller.close
-    if argv.length > 3
-      argv.each_with_index do |action, index|
-        if index > 2
-          action = action.downcase
-          actions << action
-          write_def_controller controller_name,action
-          create_view_file action
-          write_action_routes controller_name,action
-          write_to_view controller_name,action
+      create_controller_class controller_name
+      if argv.length > 3
+        argv.each_with_index do |action, index|
+          if index > 2
+            action = action.downcase
+            actions << action
+            write_def_controller controller_name,action
+            create_view_file action
+            write_action_routes controller_name,action
+            write_to_view controller_name,action
+          end
         end
       end
     end
-   end
-    write_controller = File.open("app/controllers/#{controller_name}_controller.rb","a")
-    write_controller.write "\nend"
-    write_controller.close
-    write_routes = File.open("config/routes.rb","a")
-    write_routes.write("\nend")
-    write_routes.close
+    endfile_condition controller_name
   end
 
   private
+
+    def error_msg(keys)
+      path_error_yml = File.expand_path("../../../webit/error.yml", __FILE__)
+      config_error = YAML.load_file("#{path_error_yml}")
+      keys.split(".").inject(config_error) { |config_error, key| config_error[key] }
+    end
+
+    def create_controller_class controller_name
+      controller_name = controller_name.downcase
+      controller_class_name = controller_name.split('_').each {|word| word.capitalize!}
+      controller_class_name = controller_class_name.join.concat("Controller")
+      write_controller = File.new("app/controllers/#{controller_name}_controller.rb","w")
+      write_controller.write "class #{controller_class_name} < WebitController\n"
+      write_controller.close
+    end
+
+    def endfile_condition controller_name
+      write_controller = File.open("app/controllers/#{controller_name}_controller.rb","a")
+      write_controller.write "\nend"
+      write_controller.close
+      write_routes = File.open("config/routes.rb","a")
+      write_routes.write("\nend")
+      write_routes.close
+    end
 
     def write_def_controller controller_name,action
       write_controller = File.open("app/controllers/#{controller_name}_controller.rb","a+")
