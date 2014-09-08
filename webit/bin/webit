@@ -1,10 +1,10 @@
 #!/usr/bin/ruby
 require 'yaml'
-require ::File.expand_path("../../lib/generators/generator_model_controller.rb", __FILE__)
+require ::File.expand_path("../../lib/generators/generator.rb", __FILE__)
 require ::File.expand_path("../../lib/generators/generate_app_directory.rb", __FILE__)
 require ::File.expand_path("../../lib/webit.rb", __FILE__)
 module CreateApplication
-
+  include Generator
   def self.error_msg(keys)
     path_error_yml = File.expand_path("../../lib/webit/error.yml", __FILE__)
     config_error = YAML.load_file("#{path_error_yml}")
@@ -12,16 +12,6 @@ module CreateApplication
   end
 
   def self.identify_commandline_arguement
-<<<<<<< HEAD
-    if ARGV[0].eql? "new"
-      CreateApplication.create_app
-    elsif ARGV[0] == "generate" || ARGV[0] == "g"
-      CreateApplication.create_model_controller
-    elsif ARGV[0] == "start" && (ARGV[1] == "server" || ARGV[1] == 's')
-      CreateApplication.start_server
-    else
-      puts "Webit Version v-0.0.1"
-=======
     action = ARGV[0]
     case action
       when "new"
@@ -32,7 +22,6 @@ module CreateApplication
         CreateApplication.start_server
       else
        puts "Webit Version v-0.0.1"
->>>>>>> d39a2aca7931e4ba405c8a6598ee156cf18150d5
     end
   end
 
@@ -54,6 +43,7 @@ module CreateApplication
     constant = ["model","controller"]
     action = ARGV[1]
     action_name = ARGV[2]
+    arguement_array = ARGV
     if action.nil?
       puts CreateApplication.error_msg("error.model_control_error")
     else
@@ -64,14 +54,14 @@ module CreateApplication
         if action_name.nil?
           puts CreateApplication.error_msg("error.model_error")
         else
-        Generator.generating_model_controller ARGV
+          Base.new.generating_model_controller arguement_array
         end
       end
       if type.eql? ("controller")
         if action_name.nil?
           puts CreateApplication.error_msg("error.controller_error")
         else
-          Generator.generating_model_controller ARGV
+          Base.new.generating_model_controller arguement_array
         end
       end
     else
@@ -80,13 +70,6 @@ module CreateApplication
   end
 
   def self.start_server
-<<<<<<< HEAD
-    begin
-      system "rackup config.ru"
-    rescue
-      puts "\nPlease run this command from root directory of your Application to start server!\n"
-=======
-    constant = ["s","server"]
     action = ARGV[1]
     if constant.include?(action)
       begin
@@ -96,10 +79,7 @@ module CreateApplication
       end
     else
       puts "Server missing"
->>>>>>> d39a2aca7931e4ba405c8a6598ee156cf18150d5
     end
   end
-
 end
-
 CreateApplication.identify_commandline_arguement
