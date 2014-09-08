@@ -1,0 +1,20 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    erubis (2.7.0)
+    mysql2 (0.3.16)
+    rack (1.5.2)
+    rack-accept-media-types (0.9)
+    rack-respond_to (0.9.8)
+      rack-accept-media-types (>= 0.6)
+    webit (0.0.1)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  erubis
+  mysql2
+  rack
+  rack-respond_to
+  webit

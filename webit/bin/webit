@@ -88,6 +88,7 @@ module CreateApplication
 
   # method to start rack server
   def self.start_server
+    constant = ["s", "server"]
     action = ARGV[1]
     if constant.include?(action)
       begin

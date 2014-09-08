@@ -1,0 +1,15 @@
+<% @title="Edit Post | #{@id}" %>
+<div class = "row">
+  <div class = "showPost offset6">
+      <form method="post" name = "post_form" id="post_form_id" action="/post/<%=@id%>/update"  onsubmit = "return validateForm();">
+      <h3 class="heading">Change Your Title</h3>
+      <input name="title" type="text" class = "titleBox" placeholder = "<%=@post.first['title']%>"/></br>
+      <h3 class="heading">Change Your Mind Here!</h3>
+      <textarea name="content" class="textbox" type= "text" placeholder = "<%=@post.first['content']%>"></textarea>
+      <input class= "btn btn-medium btn-primary span3" type ="submit" value="UPDATE"/>
+      </form>
+    <form action = "/posts">
+    <input class= "btn btn-medium btn-primary span3" type="submit" value="CANCEL"/>
+    </form>
+  </div>
+</div>

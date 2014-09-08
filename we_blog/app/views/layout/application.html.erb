@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>WeBlog | <%= @title %></title>
+<link rel="icon" href="https://avatars2.githubusercontent.com/u/332874?v=2&s=200">
+<link rel="stylesheet" type="text/css" href=" http://getbootstrap.com/2.3.2/assets/css/bootstrap.css">
+<link rel="stylesheet" type="text/css" href="/assets/style.css">
+<script type="text/javascript" src="/assets/script.js"></script>
+</head>
+  <body>
+    <div class="header">
+      <div class="container">
+        <ul class="nav nav-pills">
+          <li class = "active">
+            <a class = "logo" href="/">WeBlog</a>
+          </li>
+          <li >
+            <a href="/about">About Us</a>
+          </li>
+          <li>
+            <a href="/contact">Contact Us</a>
+          </li>
+        </ul>
+    </div>
+  </div>
+  <div class="content">
+    <div class="container">
+
+      <%= yield %>
+      
+    </div>
+  </div>
+  <div class="footer">
+    <div class="container">
+        <span class="copyright">&copy All rights reserved Weblog 2014</span>
+    </div>
+  </div>
+  </body>
+</html>

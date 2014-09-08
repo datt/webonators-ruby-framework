@@ -1,0 +1,20 @@
+<% @title="New Post" %>
+<div class = "showTitle">
+  <h3 class="postTitle"><a href="/posts"> Post List </a></h3>
+  <ul class = "postList">
+    <% @posts.each do |post| %>
+      <li>
+        <a class = "titlePrint" href ="/post/<%=post["id"]%>"> <%= post["title"] %> </a>
+      </li>
+    <%end%>
+  </ul>
+</div>
+<div class = "showPost">
+  <form method="post" name = "post_form" id="post_form_id" action="/post/create"  onsubmit = "return validateForm();">
+    <h3 class="heading">Title</h3>
+    <input name="title" type="text" class = "titleBox" placeholder = "Title your Post"/></br>
+    <h3 class="heading">Word your mind!</h3>
+    <textarea name="content" class="textbox" type= "text" placeholder = "Start minding here.."></textarea>
+    <input class= "btn btn-large btn-primary span3" type ="submit" value="SHARE"/>
+  </form>
+</div>
