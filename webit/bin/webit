@@ -51,23 +51,31 @@ module CreateApplication
     end
     if constant.include?(type)
       if type.eql? ("model")
-        if action_name.nil?
-          puts CreateApplication.error_msg("error.model_error.perror")
-          puts CreateApplication.error_msg("error.model_error.usage")
-        else
-          Base.new.generating_model_controller arguement_array
-        end
+        CreateApplication.it_is_model arguement_array,action_name
       end
       if type.eql? ("controller")
-        if action_name.nil?
-          puts CreateApplication.error_msg("error.controller_error.perror")
-          puts CreateApplication.error_msg("error.controller_error.usage")
-        else
-          Base.new.generating_model_controller arguement_array
-        end
+        CreateApplication.it_is_controller arguement_array,action_name
       end
     else
       puts CreateApplication.error_msg("error.model_control_error")
+    end
+  end
+
+  def self.it_is_model (arguement_array,action_name)
+    if action_name.nil?
+      puts CreateApplication.error_msg("error.model_error.perror")
+      puts CreateApplication.error_msg("error.model_error.usage")
+      else
+        Base.new.generating_model_controller arguement_array
+      end
+  end
+
+  def self.it_is_controller (arguement_array,action_name)
+    if action_name.nil?
+      puts CreateApplication.error_msg("error.model_error.perror")
+      puts CreateApplication.error_msg("error.model_error.usage")
+    else
+      Base.new.generating_model_controller arguement_array
     end
   end
 
