@@ -4,14 +4,11 @@ class Dispatcher
   # and call appropriate Controller's action. Also provides static css and js files if necessary. 
   def self.dispatch path_info, params=nil
     route_variables = parse_routes path_info.gsub /[\d]+/, ":id"
-    unless route_variables[:url].nil?
-      controller = Object.const_get "#{route_variables[:controller]}"
-      object = controller.new
-      id = parse_id path_info
-      object.send "#{route_variables[:action]}", *[id,params].compact
-    else
-      get_static_pages path_info
-    end
+    return get_static_pages(path_info) if route_variables[:url].nil?
+    controller = Object.const_get "#{route_variables[:controller]}"
+    object = controller.new
+    id = parse_id path_info
+    object.send "#{route_variables[:action]}", *[id,params].compact
   end
 
   private
@@ -51,6 +48,9 @@ class Dispatcher
       {js: javascript}
     elsif path_info.split(".").last.eql? "css"
       {css: stylesheet}
+    else
+      {html: "<h1>Page Not Found Error.</h1><a href='/'>Go back to Home</a>",
+       status: 404}
     end
   end
 end

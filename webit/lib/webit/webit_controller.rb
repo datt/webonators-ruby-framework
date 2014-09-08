@@ -6,18 +6,18 @@ class WebitController
   def render action
     template = Erubis::Eruby.new File.read("#{ROOT}/app/views/#{action}.html.erb")
     content = template.result(binding)
-    get_layout { content }
+    {html: get_layout { content }, status: 200}
   end
 
   # define -> redirect_to() method accepts a path from Controller's action
   # and sends the url to response method. 
   def redirect_to url
-    {url: url}
+    {url: url, status: 302}
   end
 
   private
 
-  # define -> get_layout. Returns the whole HTML file along with layout and body content.
+  # define -> get_layout(). Returns the whole HTML file along with layout and body content.
    def get_layout
     template = Erubis::Eruby.new File.read("#{ROOT}/app/views/layout/application.html.erb")
     template.result(binding)
