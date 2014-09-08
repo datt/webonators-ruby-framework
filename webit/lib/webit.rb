@@ -4,7 +4,6 @@ require ::File.expand_path("../webit/webit_model", __FILE__)
 require ::File.expand_path("../webit/webit_controller", __FILE__)
 require ::File.expand_path("../webit/webit_routes", __FILE__)
 require ::File.expand_path("../webit/request", __FILE__)
-#require ::File.expand_path("../error.yml", __FILE__)
 
 module Webit
   autoload :WebitRoutes, 'webit/webit_routes'

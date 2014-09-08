@@ -1,9 +1,5 @@
 class StaticPagesController < WebitController
 
-  def initialize
-    @path = ROOT
-  end
-
   def home
     render 'home'
   end
