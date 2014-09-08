@@ -52,14 +52,16 @@ module CreateApplication
     if constant.include?(type)
       if type.eql? ("model")
         if action_name.nil?
-          puts CreateApplication.error_msg("error.model_error")
+          puts CreateApplication.error_msg("error.model_error.perror")
+          puts CreateApplication.error_msg("error.model_error.usage")
         else
           Base.new.generating_model_controller arguement_array
         end
       end
       if type.eql? ("controller")
         if action_name.nil?
-          puts CreateApplication.error_msg("error.controller_error")
+          puts CreateApplication.error_msg("error.controller_error.perror")
+          puts CreateApplication.error_msg("error.controller_error.usage")
         else
           Base.new.generating_model_controller arguement_array
         end
