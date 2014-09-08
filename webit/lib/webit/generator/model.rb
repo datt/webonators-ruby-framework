@@ -38,7 +38,6 @@ class Model
         set_column data_type,column_name,model_class_name,file_name
         WebitModel.create_table model_name,data_type,column_name
     else
-      abort "Wrong Syntax..Command to generate model => webit g model mode_name data_type:column_name"
       puts error_msg("error.controller_error.perror")
       puts error_msg("error.controller_error.usage")
     end
