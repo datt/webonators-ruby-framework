@@ -1,37 +1,51 @@
-require ::File.expand_path("../../../webit/webit_model.rb", __FILE__)
+require ::File.expand_path("../../webit_model.rb", __FILE__)
 require ::File.expand_path("../../generator.rb", __FILE__)
 require 'fileutils'
-
 class Model
 
   DATA_TYPE = ["integer","float","boolean","string","text"]
   MIN_ARGUMENT_LENGTH = 3
-  def call_for_model_operations arguement_array
-    model_name = arguement_array[2]
+
+  def generate arguement_array
+    model_name = arguement_array[MIN_ARGUMENT_LENGTH-1]
     file_name = get_file_name arguement_array
     if file_name.nil?
       abort "File can't be created"
     else
+      generate_model arguement_array, file_name, model_name
+    end
+  end
+
+  private
+
+  # method to include user errors
+    def error_msg(keys)
+      path_error_yml = File.expand_path("../../../config/error.yml", __FILE__)
+      config_error = YAML.load_file("#{path_error_yml}")
+      keys.split(".").inject(config_error) { |config_error, key| config_error[key] }
+    end
+
+    def generate_model arguement_array, file_name, model_name
       create_model_file file_name
       model_name = singularize model_name
       model_class_name = model_name.capitalize
       validate_flag = validate arguement_array
       write_in_model_file model_name,model_class_name
       if validate_flag
-        data_type,column_name = get_model_attribute arguement_array
-        set_column data_type,column_name,model_class_name,file_name
-        WebitModel.create_table model_name,data_type,column_name
+          data_type,column_name = get_model_attribute arguement_array
+          set_column data_type,column_name,model_class_name,file_name
+          WebitModel.create_table model_name,data_type,column_name
       else
         abort "Wrong Syntax..Command to generate model => webit g model mode_name data_type:column_name"
+        puts error_msg("error.controller_error.perror")
+        puts error_msg("error.controller_error.usage")
       end
     end
-  end
-
-  private
 
     def singularize model_name
-      if model_name[model_name.length-1].eql?'s'
-        model_name[model_name.length-1] = ''
+      last_element = -1
+      if model_name[last_element].eql? 's'
+        model_name[last_element] = ''
       end
       model_name
     end
@@ -56,8 +70,8 @@ class Model
         data_type_column_name_array = arguement_array.drop(3)
         data_type_column_name_array.each do |element|
           column = element.split(':')
-          data_type << column[0]
-          column_name << column[1]
+          data_type << column.first
+          column_name << column.last
         end
       end
       return data_type, column_name
@@ -82,15 +96,12 @@ class Model
     end
 
     def set_column data_type, column_name, model_class_name,file_name
-      loop_counter = 0
       write_file = File.open("app/models/#{file_name}.rb","a+")
       write_file.each_line do |line|
         if line.scan"class #{model_class_name}"
-          while(loop_counter <= data_type.size-1)
-            write_file.write"\s\sattr_access :#{column_name[loop_counter]} , :#{data_type[loop_counter]}\n"
-            loop_counter += 1
+          column_name.zip(data_type).each do |value|
+            write_file.write"\s\sattr_access :#{value.first} , :#{value.last}\n"
           end
-          write_file.write"\n"
         end
       end
       write_file.write("end")
@@ -99,12 +110,12 @@ class Model
 
     def get_file_name argument_array
       create_model_flag = 0
-      model_name = argument_array[2]
+      model_name = argument_array[MIN_ARGUMENT_LENGTH-1]
       if argument_array.first.eql?"g"
         if model_name.nil?
-          abort "Model Name is not defined"
+          puts error_msg("error.model_error.perror")
         elsif model_name.downcase.eql?"model"
-          abort "Sorry..Keywork Model cant be used in place of model_name"
+          puts error_msg("error.model_error.same")
         else
           file_name = model_name.downcase
         end
