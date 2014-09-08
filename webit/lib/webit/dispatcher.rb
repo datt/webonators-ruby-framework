@@ -42,12 +42,10 @@ class Dispatcher
   # define -> get_static_pages(). Accepts path_info
   # returns static CSS or Javascript based on the request.
   def self.get_static_pages path_info
-    stylesheet = File.read("#{ROOT}/app/assets/style.css")
-    javascript = File.read("#{ROOT}/app/assets/script.js")
     if path_info.split(".").last.eql? "js"
-      {js: javascript}
+      {js: File.read("#{ROOT}/app#{path_info}")}
     elsif path_info.split(".").last.eql? "css"
-      {css: stylesheet}
+      {css: File.read("#{ROOT}/app#{path_info}")}
     else
       {html: "<h1>Page Not Found Error.</h1><a href='/'>Go back to Home</a>",
        status: 404}
