@@ -16,7 +16,7 @@ module CreateApplication
     case action
       when "new"
         CreateApplication.create_app
-      when "g" || "generate"
+      when "g"
         CreateApplication.create_model_controller
       when "start"
         CreateApplication.start_server
