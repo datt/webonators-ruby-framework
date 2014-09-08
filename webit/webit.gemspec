@@ -6,7 +6,7 @@ Gem::Specification.new do |spec|
   spec.description = "Webit is MVC framework developed in Language Ruby. This will make an easy way for user to create web Application."
   spec.authors  = ["Taha Husain","Palash Kulkarni","Minakhi Najardhane","Kartik Nagre"]
   spec.email = ["taha.husain@weboniselab.com","palash.kulkarni@weboniselab.com","minakshi.najardhane@weboniselab.com","kartik.nagre@weboniselab.com"]
-  spec.files = Dir["lib/generators/*.rb"] +Dir["lib/generators/generator/*.rb"] + Dir["lib/webit/*"] + ["lib/webit.rb"]
+  spec.files = Dir["lib/config/*"] + Dir["lib/webit/generator/*.rb"] + Dir["lib/webit/*"] + ["lib/webit.rb"]
   spec.executables = ["webit"]
   spec.license = "MIT"
 end
