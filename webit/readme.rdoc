@@ -1,0 +1,13 @@
+Webit gem is used to provide an easy way to create web application.
+Commands that are used :
+1. Command to create new application : webit new app application_name
+2. Command to generate model : webit new model model_name data_type:column_name
+3. Command to generate controller : webit new controller controller_name actions
+
+Example :-
+
+$ webit new app sample
+
+/sample $ webit new model person string:name integer:age
+
+/sample $ webit new controller account open close
