@@ -96,5 +96,5 @@ class Mysql2Adapter
         parameter[key] = datatype_map[value]
       end
       parameter
-    end
+  end
 end

@@ -26,16 +26,7 @@ class Connection
         database = configuration["database"]
         @connection = Mysql2::Client.new(:host => "#{hostname}", :username => "#{username}",
                                         :password => "#{password}", :database =>"#{database}")
-
-      when "sqlite3"
-        ##---------------------------------------------##
-        ##----connection string for connecting to sqlite3
-        ##---------------------------------------------##
-      when "mongod"
-        ##---------------------------------------------##
-        ##----connection string for connecting to sqlite3
-        ##---------------------------------------------##
-    end
+      end
    return  @connection,adapter
   end
 end
