@@ -1,9 +1,5 @@
 class PostsController < WebitController
 
-  def initialize
-    @path = ROOT
-  end
-
   def index
     @posts =Post.all
     render 'index'
