@@ -7,11 +7,13 @@ error:
     usage: |
             USAGE(without attributes) - webit generate model MODEL_NAME
             USAGE(with attributes) - webit generate model MODEL_NAME DATA_TYPE:COLOUMN_NAME
+    same: Cannot create model with name 'model'
   controller_error:
     perror: Controller Name Missing
     usage: |
             USAGE(without actions) - webit generate controller CONTROLLER_NAME
             USAGE(with actions) - webit generate controller CONTROLLER_NAME ACTION_NAME
+    same: Cannot create controller with name 'controller'
   model_control_error: Model/Controller Name missing
   webit : |
          Welcome to Webit
