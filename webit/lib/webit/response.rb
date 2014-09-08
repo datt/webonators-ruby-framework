@@ -4,6 +4,8 @@ require 'rack/respond_to'
 class Response
   include Rack::RespondTo
 
+  # define -> response(). This method returns the response back to browser via call method in Request class.
+  # It accepts either content in form of HTML or CSS or Javascript or a url to which page is to be redirected.s 
   def self.response content
     Rack::RespondTo.media_types = %w( text/html text/css application/javascript )
     redirect_url = nil
