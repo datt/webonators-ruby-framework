@@ -18,8 +18,8 @@ class WebitController
   private
 
   # define -> get_layout(). Returns the whole HTML file along with layout and body content.
-   def get_layout
+  def get_layout
     template = Erubis::Eruby.new File.read("#{ROOT}/app/views/layout/application.html.erb")
     template.result(binding)
-   end
+  end
 end

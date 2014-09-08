@@ -18,3 +18,6 @@ error:
   webit : |
          Welcome to Webit
          A Ruby based Framework !
+  page_not_found_error:
+    perror: ERROR 404 - Page not found
+    message: The Route specified by you is not correct !

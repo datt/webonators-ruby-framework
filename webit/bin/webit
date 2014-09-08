@@ -1,22 +1,25 @@
 #!/usr/bin/ruby
 require 'yaml'
-require ::File.expand_path("../../lib/generators/generator_model_controller.rb", __FILE__)
-require ::File.expand_path("../../lib/generators/generate_app_directory.rb", __FILE__)
+require ::File.expand_path("../../lib/webit/generator.rb", __FILE__)
+require ::File.expand_path("../../lib/webit/generator/generate_app_directory.rb", __FILE__)
 require ::File.expand_path("../../lib/webit.rb", __FILE__)
 module CreateApplication
+  include Generator
 
+  # method to include user errors
   def self.error_msg(keys)
-    path_error_yml = File.expand_path("../../lib/webit/error.yml", __FILE__)
+    path_error_yml = File.expand_path("../../lib/config/error.yml", __FILE__)
     config_error = YAML.load_file("#{path_error_yml}")
     keys.split(".").inject(config_error) { |config_error, key| config_error[key] }
   end
 
+  # method to identify user arguments from command line
   def self.identify_commandline_arguement
     action = ARGV[0]
     case action
       when "new"
         CreateApplication.create_app
-      when "g" || "generate"
+      when "g"
         CreateApplication.create_model_controller
       when "start"
         CreateApplication.start_server
@@ -25,6 +28,7 @@ module CreateApplication
     end
   end
 
+  # method to create user application
   def self.create_app
     check_app = ARGV[1]
     app_name = ARGV[2]
@@ -39,10 +43,12 @@ module CreateApplication
     end
   end
 
+  # method to check whether arguement is model or controlller
   def self.create_model_controller
     constant = ["model","controller"]
     action = ARGV[1]
     action_name = ARGV[2]
+    arguement_array = ARGV
     if action.nil?
       puts CreateApplication.error_msg("error.model_control_error")
     else
@@ -50,26 +56,38 @@ module CreateApplication
     end
     if constant.include?(type)
       if type.eql? ("model")
-        if action_name.nil?
-          puts CreateApplication.error_msg("error.model_error")
-        else
-        Generator.generating_model_controller ARGV
-        end
+        CreateApplication.it_is_model arguement_array,action_name
       end
       if type.eql? ("controller")
-        if action_name.nil?
-          puts CreateApplication.error_msg("error.controller_error")
-        else
-          Generator.generating_model_controller ARGV
-        end
+        CreateApplication.it_is_controller arguement_array,action_name
       end
     else
       puts CreateApplication.error_msg("error.model_control_error")
     end
   end
 
+  # method to perform operations if it is model
+  def self.it_is_model (arguement_array,action_name)
+    if action_name.nil?
+      puts CreateApplication.error_msg("error.model_error.perror")
+      puts CreateApplication.error_msg("error.model_error.usage")
+      else
+        Base.new.generating_model_controller arguement_array
+      end
+  end
+
+  # method to perform operations if it is controller
+  def self.it_is_controller (arguement_array,action_name)
+    if action_name.nil?
+      puts CreateApplication.error_msg("error.model_error.perror")
+      puts CreateApplication.error_msg("error.model_error.usage")
+    else
+      Base.new.generating_model_controller arguement_array
+    end
+  end
+
+  # method to start rack server
   def self.start_server
-    constant = ["s","server"]
     action = ARGV[1]
     if constant.include?(action)
       begin
@@ -81,7 +99,5 @@ module CreateApplication
       puts "Server missing"
     end
   end
-
 end
-
 CreateApplication.identify_commandline_arguement

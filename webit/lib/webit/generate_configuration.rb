@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 require 'yaml'
-require ::File.expand_path("../initializers.rb", __FILE__)
+require ::File.expand_path("../../config/initializers.rb", __FILE__)
 
 module GenerateConfiguration
   def self.create_database_file

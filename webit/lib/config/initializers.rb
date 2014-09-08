@@ -6,7 +6,7 @@ module Constants
   "database" => "test",
   "hostname" => "localhost",
   "username" => "root",
-  "password" => "kartik"
+  "password" => ""
   }
 }
 
@@ -24,6 +24,11 @@ module Constants
 # adapter: sqlite3
 # database: db/development.sqlite3\n"
 
+  ROUTES_STRING = "#\n#\n# Define routes for your application here.
+# Usage: goto '/controller/action' on ControllerName#action_name via: method
+# Example:
+# goto '/user/1/show' on UsersController#show via: get
+# goto '/user/signin' on UsersController#signin via: post\n#\n#\n"
 
   GEM_FILE_STRING = "source 'https://rubygems.org'
 gem 'rack'
