@@ -4,14 +4,18 @@ require 'rack/respond_to'
 class Response
   include Rack::RespondTo
 
-  def self.get_response content
-    Rack::RespondTo.media_types = ['text/html']
+  def self.response content
+    Rack::RespondTo.media_types = %w( text/html text/css application/javascript )
     redirect_url = nil
     body = respond_to do |format|
-      if content.class == String
+      if content.class.eql? String
         format.html { content }
-      else
+      elsif content.key? :url
         redirect_url = content[:url]
+      elsif content.key? :js
+        format.js { content[:js] }
+      else
+        format.css { content[:css] }
       end
     end
     unless redirect_url
@@ -20,5 +24,5 @@ class Response
       [302, {'Location' => redirect_url}, []]
     end
   end
-  
+
 end

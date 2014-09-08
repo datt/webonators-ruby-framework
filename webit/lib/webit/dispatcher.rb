@@ -2,11 +2,13 @@ class Dispatcher
 
    def self.dispatch path_info, params=nil
     route_variables = parse_routes path_info.gsub /[\d]+/, ":id"
-    unless route_variables.nil?
+    unless route_variables[:url].nil?
       controller = Object.const_get "#{route_variables[:controller]}"
       object = controller.new
       id = parse_id path_info
       object.send "#{route_variables[:action]}", *[id,params].compact
+    else
+      get_static_pages path_info
     end
   end
 
@@ -34,4 +36,13 @@ class Dispatcher
     id
    end
 
+  def self.get_static_pages path_info
+    stylesheet = File.read("#{ROOT}/app/assets/style.css")
+    javascript = File.read("#{ROOT}/app/assets/script.js")
+    if path_info.split(".").last.eql? "js"
+      {js: javascript}
+    else
+      {css: stylesheet}
+    end
+  end
 end

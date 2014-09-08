@@ -12,7 +12,7 @@ class Request
       params = request.params
     end
     content = Dispatcher.dispatch *[path, params].compact
-    Response.get_response content
+    Response.response content
   end
 
 end
