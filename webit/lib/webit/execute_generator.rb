@@ -125,6 +125,7 @@ module ExecuteGenerator
     arguement_datatype = []
     min_arguement_length = 3
     data_type = ["integer","float","boolean","string","text"]
+
     argv.each_with_index do |arguement,index|
       if index >= min_arguement_length
         arguement_datatype = arguement.split(':')
