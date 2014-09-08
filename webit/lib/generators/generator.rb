@@ -8,7 +8,6 @@ module Generator
     private
       def get_generator_parameter argv
         if argv[1].downcase.eql?"model"
-          puts "inside kick start"
           Model.new.call_for_model_operations argv
         elsif argv[1].downcase.eql?"controller"
           Controller.new.call_for_controller_operations argv

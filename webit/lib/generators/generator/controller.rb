@@ -2,7 +2,8 @@ require ::File.expand_path("../../../webit/webit_controller.rb", __FILE__)
 require 'fileutils'
 
 class Controller
-  def self.call_for_controller_operations argv
+
+  def call_for_controller_operations argv
     actions = []
     controller_name = argv[2]
     if argv[2].nil?
@@ -38,32 +39,34 @@ class Controller
     write_routes.close
   end
 
-  def self.write_def_controller controller_name,action
-    write_controller = File.open("app/controllers/#{controller_name}_controller.rb","a+")
-    write_controller.write("\n\s\sdef #{action}\n\s\send\n")
-    write_controller.close
-  end
+  private
 
-  def self.write_action_routes controller_class_name,action
-    file = File.open("config/routes.rb","a+")
-    if file.readline("class Routes < WebitRoutes")
-      file.write("\n\s\sget \'/#{controller_class_name}/#{action}\' do\n")
-      file.write("\s\s\s\sgoto \'#{controller_class_name}\',\s\'#{action}\'\n")
-      file.write("\s\send\n")
+    def write_def_controller controller_name,action
+      write_controller = File.open("app/controllers/#{controller_name}_controller.rb","a+")
+      write_controller.write("\n\s\sdef #{action}\n\s\send\n")
+      write_controller.close
+    end
+
+    def write_action_routes controller_class_name,action
+      file = File.open("config/routes.rb","a+")
+      if file.readline("class Routes < WebitRoutes")
+        file.write("\n\s\sget \'/#{controller_class_name}/#{action}\' do\n")
+        file.write("\s\s\s\sgoto \'#{controller_class_name}\',\s\'#{action}\'\n")
+        file.write("\s\send\n")
+        file.close
+      end
+    end
+
+    def create_view_file action
+      File.new("app/views/#{action}.html.erb","w")
+    end
+
+    def write_to_view controller_name,action
+      file = File.open("app/views/#{action}.html.erb","a")
+      file.write("<html>\n\s\s<body>\n\s\s\s\s<h1>\n")
+      file.write("\s\s<%= \"You are in #{controller_name} Controller\'s #{action} Action\" %>\n")
+      file.write("\s\s\s\s</h1>\n")
+      file.write("\s\s</body>\n</html>\n")
       file.close
     end
-  end
-
-  def self.create_view_file action
-    File.new("app/views/#{action}.html.erb","w")
-  end
-
-  def self.write_to_view controller_name,action
-    file = File.open("app/views/#{action}.html.erb","a")
-    file.write("<html>\n\s\s<body>\n\s\s\s\s<h1>\n")
-    file.write("\s\s<%= \"You are in #{controller_name} Controller\'s #{action} Action\" %>\n")
-    file.write("\s\s\s\s</h1>\n")
-    file.write("\s\s</body>\n</html>\n")
-    file.close
-  end
 end
